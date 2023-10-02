@@ -1,0 +1,36 @@
+{
+  "name": "leperclothes",
+  "version": "1.0.0",
+  "description": "Leper clothes es un proyecto que se basa en el desarrollo de una API REST la cual provee los datos de los productos que comercializa el emprendimiento ficticio. La finalidad es poder desarrollar un proyecto personal en el cual aplique mis conocimientos y habilidades sobre las tecnologias que se implementan para el desarrollo.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/server.js",
+    "start:dev": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pedrojrb/leperclothes.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Pedro Ruiz Baleani",
+  "license": "ISC",
+  "dependencies": {
+    "class-validator": "^0.14.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.3",
+    "morgan": "^1.10.0",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/express": "^4.17.18",
+    "@types/morgan": "^1.9.6",
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1"
+  }
+}
