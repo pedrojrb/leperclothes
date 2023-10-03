@@ -13,10 +13,24 @@ class ServerBoostrap {
     constructor() {
         this.app = (0, express_1.default)();
         this.port = 8000;
+        //initialize all dependencies
         this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use((0, morgan_1.default)('dev'));
         this.app.use((0, cors_1.default)());
+        //http request to main route
+        this.app.get('/api/', (req, res) => {
+            try {
+                if (res.statusCode === 200) {
+                    res.status(200).json({
+                        message: 'Prueba dos'
+                    });
+                }
+            }
+            catch (err) {
+                throw err;
+            }
+        });
         this.listen();
     }
     /**

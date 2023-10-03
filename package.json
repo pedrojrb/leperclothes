@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/server.js",
-    "start:dev": ""
+    "start:dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\""
   },
   "repository": {
     "type": "git",

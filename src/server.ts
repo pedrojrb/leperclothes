@@ -10,10 +10,27 @@ class ServerBoostrap {
  * This constructor is responsible for exectuing all dependencies in the server that are necessary before to the connect process.
  */
     constructor(){
+        //initialize all dependencies
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:true}));
         this.app.use(morgan('dev'));
         this.app.use(cors());
+        
+        //http request to main route
+        this.app.get('/api/', (req, res) => { 
+            
+            try{
+                if(res.statusCode === 200){
+                    res.status(200).json({
+                        message:'Prueba dos'
+                    });
+                }
+
+            }catch(err){
+                throw err;
+            }
+        })
+
         this.listen();
 
     }
@@ -25,6 +42,8 @@ class ServerBoostrap {
             console.log("Server is listening on port " + this.port);
         })
     }
+
+
 }
 
 new ServerBoostrap();
