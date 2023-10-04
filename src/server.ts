@@ -30,9 +30,7 @@ class ServerBoostrap {
                 throw err;
             }
         })
-
         this.listen();
-
     }
 /**
  * this is the main server that will be used to connect to the server.
