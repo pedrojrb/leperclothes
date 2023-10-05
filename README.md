@@ -24,6 +24,7 @@ cors
 mongoose
 typescript
 class Validator
+JsonWebToken
 
 ## Dependencias de desarrollo utilizadas:
 @types/cors

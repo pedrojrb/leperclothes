@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/server.js",
-    "start:dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\""
+    "start:dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\"",
+    "start:prod": "SET NODE_ENV=production && npm start"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,12 @@
   "author": "Pedro Ruiz Baleani",
   "license": "ISC",
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.3",
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
     "morgan": "^1.10.0",
     "typescript": "^5.2.2"

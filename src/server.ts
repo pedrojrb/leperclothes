@@ -1,16 +1,18 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import { ServerConfiguration } from "./config/config";
 
 
-class ServerBoostrap {
+class ServerBoostrap extends ServerConfiguration {
     public  app: express.Application = express();
-    private port: number = 8000;
+    private port: number = this.getNumberPort('PORT');
 /**
  * This constructor is responsible for exectuing all dependencies in the server that are necessary before to the connect process.
  */
     constructor(){
-        //initialize all dependencies
+        //initialize all dependencies and methods on ServerConfiguration
+        super();
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:true}));
         this.app.use(morgan('dev'));
