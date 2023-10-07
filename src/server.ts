@@ -2,6 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { ServerConfiguration } from "./config/config";
+import { UserRouter } from "./routes/users.router";
+import { Router } from './routes/router';
+import { TshirtRouter } from "./routes/tshirt.router";
 
 
 class ServerBoostrap extends ServerConfiguration {
@@ -18,20 +21,8 @@ class ServerBoostrap extends ServerConfiguration {
         this.app.use(morgan('dev'));
         this.app.use(cors());
         
-        //http request to main route
-        this.app.get('/api/', (req, res) => { 
-            
-            try{
-                if(res.statusCode === 200){
-                    res.status(200).json({
-                        message:'Prueba dos'
-                    });
-                }
-
-            }catch(err){
-                throw err;
-            }
-        })
+        this.app.use('/api/',this.router())
+        
         this.listen();
     }
 /**
@@ -43,7 +34,13 @@ class ServerBoostrap extends ServerConfiguration {
         })
     }
 
-
+    /**
+     * This method return all of the routes in the application.
+     * @returns array of routes (type express.router)
+     */
+    public router(): Array<express.Router>{
+        return [new UserRouter().router, new TshirtRouter().router];
+    }
 }
 
 new ServerBoostrap();
