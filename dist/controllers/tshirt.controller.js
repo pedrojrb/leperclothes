@@ -12,28 +12,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TshirtController = void 0;
 class TshirtController {
     getAllTshirts(req, res) {
-        try {
-            if (res.statusCode === 200) {
-                res.status(200).send(JSON.stringify({
-                    "tshirts": "shirts"
-                }));
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                //TODO: Create new connection to database and get tshirts data.
+                if (res.statusCode === 200) {
+                    res.status(200).send(JSON.stringify({
+                        "tshirts": "shirts"
+                    }));
+                }
             }
-        }
-        catch (err) {
-            if (res.statusCode) {
-                throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`);
+            catch (err) {
+                //TODO: Create handle error for each type error.
+                if (res.statusCode) {
+                    throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`);
+                }
+                throw err;
             }
-            throw err;
-        }
+        });
     }
     ;
     getTshirtByTshirtname(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            //TODO: Write req.params and use that value for filter when get data of database.
+            //TODO: Create new connection to database and get tshirts data.
         });
     }
     ;
     createTshirt(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            //TODO: Write body of request, and save in database.
         });
     }
     ;

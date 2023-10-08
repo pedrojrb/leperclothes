@@ -25,7 +25,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Router = void 0;
 const express = __importStar(require("express"));
+/**
+ * This main class to Routes, this class extends in another class childrens.
+ */
 class Router {
+    /**
+     * This constructor is responsible for asignn value to router and controller properties.
+     * Also, execute routes method.
+     * @param TController Controller from generyc type T.
+     */
     constructor(TController) {
         this.router = express.Router();
         this.controller = new TController();

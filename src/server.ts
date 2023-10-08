@@ -3,10 +3,11 @@ import morgan from "morgan";
 import cors from "cors";
 import { ServerConfiguration } from "./config/config";
 import { UserRouter } from "./routes/users.router";
-import { Router } from './routes/router';
 import { TshirtRouter } from "./routes/tshirt.router";
 
-
+/**
+ * Class main for execute application.
+ */
 class ServerBoostrap extends ServerConfiguration {
     public  app: express.Application = express();
     private port: number = this.getNumberPort('PORT');

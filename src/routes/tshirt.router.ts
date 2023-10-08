@@ -2,11 +2,20 @@ import { TshirtController } from '../controllers/tshirt.controller';
 import { Router } from "./router";
 import * as express from 'express';
 
+
+/**
+ * Main class of TshirtRouter
+ */
+
 export class TshirtRouter extends Router<TshirtController>{
+
     constructor(){
         super(TshirtController);
     }
 
+    /**
+     * This method executes all of routing methods.
+     */
     routes(): void {
         this.router.get('/tshirts', (req: express.Request,res: express.Response) => this.controller.getAllTshirts(req,res));
         this.router.get('/tshirts/:name', (req: express.Request,res: express.Response) => this.controller.getTshirtByTshirtname(req,res));

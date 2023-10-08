@@ -9,6 +9,9 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("./config/config");
 const users_router_1 = require("./routes/users.router");
 const tshirt_router_1 = require("./routes/tshirt.router");
+/**
+ * Class main for execute application.
+ */
 class ServerBoostrap extends config_1.ServerConfiguration {
     /**
      * This constructor is responsible for exectuing all dependencies in the server that are necessary before to the connect process.

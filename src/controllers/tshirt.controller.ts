@@ -2,8 +2,11 @@ import * as express from "express";
 
 export class TshirtController{
 
-    getAllTshirts(req: express.Request, res: express.Response){
+    async getAllTshirts(req: express.Request, res: express.Response){
         try{
+
+            //TODO: Create new connection to database and get tshirts data.
+
             if(res.statusCode === 200){
 
                 res.status(200).send(JSON.stringify({
@@ -12,6 +15,7 @@ export class TshirtController{
             }
            
         } catch ( err ){
+            //TODO: Create handle error for each type error.
             if(res.statusCode){
 
                 throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`)
@@ -22,11 +26,12 @@ export class TshirtController{
     };
 
     async getTshirtByTshirtname(req: express.Request, res: express.Response){
-
+        //TODO: Write req.params and use that value for filter when get data of database.
+        //TODO: Create new connection to database and get tshirts data.
     };
 
     async createTshirt(req: express.Request, res: express.Response){
-
+        //TODO: Write body of request, and save in database.
     };
 
     async modifyTshirt(req: express.Request, res: express.Response){

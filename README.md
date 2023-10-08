@@ -11,11 +11,11 @@ Practica de diferentes conceptos de OOP y manejo de errores en Typescript.
 ---
 ## Tecnologias utilizadas:
 
-- Postman
-- Git
-- MongoDBCompass
+- Postman v10.18.11
+- Git v2.42.0
+- MongoDBCompass v1.40.2
 - Node JS v18.18.0
-- Typescript
+- Typescript v5.2.2
 
 ---
 ## Dependencias utilizadas:
