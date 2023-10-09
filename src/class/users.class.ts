@@ -1,5 +1,5 @@
 
-type TGender = 'MALE' | 'FEMALE' | 'NONBINARY';
+export type TGender = 'MALE' | 'FEMALE' | 'NONBINARY';
 
 
 interface IUser {
@@ -31,23 +31,23 @@ export  class User implements IUser {
         this.verified = false;
     }
 
-    get getUser(){ return this;};
+    private get getUser(){ return this;};
     
-    get getUsername(){ return this.username;};
+    private get getUsername(){ return this.username;};
 
-    get getName(){ return this.name; };
+    private get getName(){ return this.name; };
 
-    get getLastname(){ return this.lastname; };
+    private get getLastname(){ return this.lastname; };
     
-    get getGender(){ return this.gender; };
+    private get getGender(){ return this.gender; };
     
-    get getPassword(){ return this.password;};
+    private get getPassword(){ return this.password;};
     
-    get getEmail(){ return this.email;};
+    private get getEmail(){ return this.email;};
 
-    get getVerified(){ return this.verified};
+    private get getVerified(){ return this.verified};
 
-    get getEliminated(){ return this.eliminated;};
+    private get getEliminated(){ return this.eliminated;};
 
 
     public updateUser(user: User): void{

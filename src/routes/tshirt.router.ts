@@ -1,5 +1,5 @@
-import { TshirtController } from '../controllers/tshirt.controller';
-import { Router } from "./router";
+import { CtshirtController } from '../controllers/tshirt.controller';
+import { CRouter } from "./router";
 import * as express from 'express';
 
 
@@ -7,10 +7,10 @@ import * as express from 'express';
  * Main class of TshirtRouter
  */
 
-export class TshirtRouter extends Router<TshirtController>{
+export class CtshirtRouter extends CRouter<CtshirtController>{
 
     constructor(){
-        super(TshirtController);
+        super(CtshirtController);
     }
 
     /**

@@ -1,6 +1,6 @@
 import * as express from "express";
 
-export class TshirtController{
+export class CtshirtController{
 
     async getAllTshirts(req: express.Request, res: express.Response){
         try{

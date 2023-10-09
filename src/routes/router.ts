@@ -8,7 +8,7 @@ interface IRouter<T>{
 /**
  * This main class to Routes, this class extends in another class childrens.
  */
-export abstract class Router<T> implements IRouter<T>{
+export abstract class CRouter<T> implements IRouter<T>{
     public router: express.Router;
     public controller: T;
 

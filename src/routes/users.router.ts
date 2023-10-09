@@ -1,11 +1,11 @@
 import { UserController } from "../controllers/user.controller";
-import { Router } from "./router";
+import { CRouter } from "./router";
 import * as express from 'express';
 
 /**
  * Main class of UserRouter
  */
-export class UserRouter extends Router<UserController>{
+export class UserRouter extends CRouter<UserController>{
     constructor(){
         super(UserController);
     }
