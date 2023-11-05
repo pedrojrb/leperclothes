@@ -23,12 +23,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Router = void 0;
+exports.CRouter = void 0;
 const express = __importStar(require("express"));
 /**
  * This main class to Routes, this class extends in another class childrens.
  */
-class Router {
+class CRouter {
     /**
      * This constructor is responsible for asignn value to router and controller properties.
      * Also, execute routes method.
@@ -41,4 +41,4 @@ class Router {
     }
     routes() { }
 }
-exports.Router = Router;
+exports.CRouter = CRouter;

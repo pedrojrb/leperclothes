@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TshirtRouter = void 0;
+exports.CtshirtRouter = void 0;
 const tshirt_controller_1 = require("../controllers/tshirt.controller");
 const router_1 = require("./router");
 /**
  * Main class of TshirtRouter
  */
-class TshirtRouter extends router_1.Router {
+class CtshirtRouter extends router_1.CRouter {
     constructor() {
-        super(tshirt_controller_1.TshirtController);
+        super(tshirt_controller_1.CtshirtController);
     }
     /**
      * This method executes all of routing methods.
@@ -21,4 +21,4 @@ class TshirtRouter extends router_1.Router {
         this.router.post('/tshirts/:id', (req, res) => this.controller.deleteTshirt(req, res));
     }
 }
-exports.TshirtRouter = TshirtRouter;
+exports.CtshirtRouter = CtshirtRouter;

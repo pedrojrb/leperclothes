@@ -6,7 +6,7 @@ const router_1 = require("./router");
 /**
  * Main class of UserRouter
  */
-class UserRouter extends router_1.Router {
+class UserRouter extends router_1.CRouter {
     constructor() {
         super(user_controller_1.UserController);
     }

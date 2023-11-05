@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TshirtController = void 0;
-class TshirtController {
+exports.CtshirtController = void 0;
+class CtshirtController {
     getAllTshirts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -55,5 +55,5 @@ class TshirtController {
     }
     ;
 }
-exports.TshirtController = TshirtController;
+exports.CtshirtController = CtshirtController;
 ;

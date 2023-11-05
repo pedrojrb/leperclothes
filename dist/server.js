@@ -41,7 +41,7 @@ class ServerBoostrap extends config_1.ServerConfiguration {
      * @returns array of routes (type express.router)
      */
     router() {
-        return [new users_router_1.UserRouter().router, new tshirt_router_1.TshirtRouter().router];
+        return [new users_router_1.UserRouter().router, new tshirt_router_1.CtshirtRouter().router];
     }
 }
 new ServerBoostrap();

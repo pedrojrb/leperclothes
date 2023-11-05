@@ -3,7 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import { ServerConfiguration } from "./config/config";
 import { UserRouter } from "./routes/users.router";
-import { TshirtRouter } from "./routes/tshirt.router";
+import { CtshirtRouter } from "./routes/tshirt.router";
 
 /**
  * Class main for execute application.
@@ -40,7 +40,7 @@ class ServerBoostrap extends ServerConfiguration {
      * @returns array of routes (type express.router)
      */
     public router(): Array<express.Router>{
-        return [new UserRouter().router, new TshirtRouter().router];
+        return [new UserRouter().router, new CtshirtRouter().router];
     }
 }
 
