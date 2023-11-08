@@ -1,22 +1,28 @@
-const mongoose = require('mongoose');
-import * as env from 'dotenv'; 
+import mongoose from 'mongoose'; 
 
 export async function databaseConnection() {
-  try {
-    let connection = await mongoose.connect(process.env.DB_URL);
-
-    if(connection){
-        console.log('Connecting to database succesfully');
-    }
-    return connection;
-
-    }catch(error){
+    let retry: number = 0;
+    try {
+    
+        while (retry < 3) {
+            try {
+                if(process.env.DB_URI){
+                    return await mongoose.connect(process.env.DB_URI, {
+                    connectTimeoutMS: 1000,
+                    socketTimeoutMS: 1000
+                });
+                break;
+                }
+            } catch (error) {
+                retry++;
+                console.log(error);
+            }
+        }
+    } catch (error) {
         throw error;
     }
+
 }
-
-databaseConnection();
-
 
 export async function disconnectDatabase(){
     await mongoose.connection.close();

@@ -4,6 +4,7 @@ import cors from "cors";
 import { ServerConfiguration } from "./config/config";
 import { UserRouter } from "./routes/users.router";
 import { CtshirtRouter } from "./routes/tshirt.router";
+import { databaseConnection } from "./config/database/db.config";
 
 /**
  * Class main for execute application.
@@ -23,8 +24,8 @@ class ServerBoostrap extends ServerConfiguration {
         this.app.use(cors());
         
         this.app.use('/api/',this.router())
-        
         this.listen();
+
     }
 /**
  * this is the main server that will be used to connect to the server.
