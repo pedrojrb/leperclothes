@@ -32,9 +32,6 @@ class ServerBoostrap extends ServerConfiguration {
  */
     public listen(){
         this.app.listen(this.port,()=>{
-            databaseConnection()
-            .then(()=>{console.log('Database connection established')})
-            .catch(()=>{console.log('Error connecting to database')});
             console.log("Server is listening on port " + this.port);
         })
     }

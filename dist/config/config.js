@@ -25,6 +25,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServerConfiguration = void 0;
 const dotenv = __importStar(require("dotenv"));
+require("dotenv/config");
 class ServerConfiguration {
     constructor() {
         const nodeNameEnv = this.createPathEnv(this.nodeEnv);
