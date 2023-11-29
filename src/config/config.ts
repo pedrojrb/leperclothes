@@ -1,5 +1,4 @@
 import * as dotenv from 'dotenv';
-
 export abstract class ServerConfiguration{
 
     constructor(){
