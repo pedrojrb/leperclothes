@@ -10,8 +10,8 @@ export async function databaseConnection() {
                     return await mongoose.connect(process.env.DB_URI, {
                     connectTimeoutMS: 1000,
                     socketTimeoutMS: 1000
-                });
-                break;
+                    });
+                    break;
                 }
             } catch (error) {
                 retry++;
@@ -19,7 +19,7 @@ export async function databaseConnection() {
             }
         }
     } catch (error) {
-        throw error;
+        throw new Error(`Error al intentar conectarse a la base de datos ${error}`);
     }
 
 }

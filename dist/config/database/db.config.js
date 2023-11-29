@@ -16,13 +16,26 @@ exports.disconnectDatabase = exports.databaseConnection = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 function databaseConnection() {
     return __awaiter(this, void 0, void 0, function* () {
+        let retry = 0;
         try {
-            if (process.env.DB_URL) {
-                return yield mongoose_1.default.connect(process.env.DB_URL);
+            while (retry < 3) {
+                try {
+                    if (process.env.DB_URI) {
+                        return yield mongoose_1.default.connect(process.env.DB_URI, {
+                            connectTimeoutMS: 1000,
+                            socketTimeoutMS: 1000
+                        });
+                        break;
+                    }
+                }
+                catch (error) {
+                    retry++;
+                    console.log(error);
+                }
             }
         }
         catch (error) {
-            throw error;
+            throw new Error(`Error al intentar conectarse a la base de datos ${error}`);
         }
     });
 }
