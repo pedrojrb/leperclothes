@@ -10,22 +10,30 @@ password: String (required)
 deleted: Boolean (default: false)
 created_at: Date (default: current date and time)
  */
-class CUserSchema  extends CBaseSchema {
+
+interface IUser {
+    username: string,
+    email: string,
+    password: string,
+    deleted: boolean,
+    created_at: Date,
+    verificated: boolean
+}
+class CUserSchema extends CBaseSchema implements IUser{
+
     username: string;
     email: string;
     password: string;
-    deleted: boolean;
+    deleted: boolean = false;
     created_at: Date;
-    verificated: boolean;
+    verificated: boolean = false;
 
-    constructor(username: string, email: string, password: string, deleted: boolean = false, created_at: Date = new Date(), verificated: boolean = false){
+    constructor(user: IUser){
         super();
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.deleted = deleted;
-        this.created_at = created_at;
-        this.verificated = verificated; 
+        this.username = user.username;
+        this.email = user.email;
+        this.password = user.password;
+        this.created_at = user.created_at;
         this.createSchema(this);
     }
 
@@ -54,6 +62,7 @@ class CUserSchema  extends CBaseSchema {
     private validateUsername(username: string): void {
 
         let regex: Readonly<RegExp> = new RegExp('^[a-z0-9]+$');
+
         try{
             username = username.toLowerCase();
 
