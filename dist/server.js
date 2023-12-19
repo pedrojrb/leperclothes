@@ -9,7 +9,6 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("./config/config");
 const users_router_1 = require("./routes/users.router");
 const tshirt_router_1 = require("./routes/tshirt.router");
-const db_config_1 = require("./config/database/db.config");
 /**
  * Class main for execute application.
  */
@@ -34,9 +33,6 @@ class ServerBoostrap extends config_1.ServerConfiguration {
      */
     listen() {
         this.app.listen(this.port, () => {
-            (0, db_config_1.databaseConnection)()
-                .then(() => { console.log('Database connection established'); })
-                .catch(() => { console.log('Error connecting to database'); });
             console.log("Server is listening on port " + this.port);
         });
     }

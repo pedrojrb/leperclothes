@@ -6,19 +6,19 @@ type TSizeClothes = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
 type TColorClothes = 'BLACK' | 'WHITE' | 'GRAY' | 'GREEN' | 'YELLOW' | 'RED' | 'BLUE' | 'PURPLE';
 
 interface IClothes {
-    name: string,
-    size: TSizeClothes,
-    color: TColorClothes,
-    price: number,
-    created_at: Date
+    name: object
+    size: Object,
+    color: Object,
+    price: Object,
+    created_at: Object
 }
-class CClothesSchema extends CBaseSchema implements IClothes{
+export class CClothesSchema extends CBaseSchema implements IClothes{
 
-    name: string;
-    size: TSizeClothes;
-    color: TColorClothes;
-    price: number;
-    created_at: Date;
+    name: Object;
+    size: Object;
+    color: Object;
+    price: Object;
+    created_at: Object;
 
     constructor(clothes: IClothes) {
         super();
@@ -29,7 +29,7 @@ class CClothesSchema extends CBaseSchema implements IClothes{
         this.created_at = clothes.created_at;
     }
 
-    protected createSchema(schema: CClothesSchema): void {
+    public createSchema(schema: CClothesSchema): void {
         try{
             this.validateSchema(schema);
 
@@ -44,9 +44,8 @@ class CClothesSchema extends CBaseSchema implements IClothes{
         }
     }
 
-    protected validateSchema(schema: CClothesSchema): void {
-        this.validateName(schema.name);
-        this.validatePrice(schema.price);
+    public validateSchema(schema: CClothesSchema): void {
+      //TODO: Feature of this method. Structure of schema is different from schema neccessary.
     }
 
     protected validateName(name: string): void {

@@ -19,7 +19,7 @@ interface IUser {
     created_at: Date,
     verificated: boolean
 }
-class CUserSchema extends CBaseSchema implements IUser{
+export class CUserSchema extends CBaseSchema implements IUser{
 
     username: string;
     email: string;
@@ -37,7 +37,7 @@ class CUserSchema extends CBaseSchema implements IUser{
         this.createSchema(this);
     }
 
-    protected createSchema(schema: CUserSchema): void {
+    public createSchema(schema: CUserSchema): void {
         try{
             this.validateSchema(schema);
 
@@ -53,7 +53,7 @@ class CUserSchema extends CBaseSchema implements IUser{
         }
     }
    
-    protected validateSchema(schema: CUserSchema): void {
+    public validateSchema(schema: CUserSchema): void {
         this.validateUsername(schema.username);
         this.validateEmail(schema.email);
         this.validatePassword(schema.password);
