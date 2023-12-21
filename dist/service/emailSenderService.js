@@ -12,37 +12,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
-const user_schema_1 = require("../schema/user.schema");
-class UserController {
-    getAllUsers(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let schema = new mongoose_1.default.Schema(user_schema_1.userSchema);
-            res.json(schema);
-        });
-    }
-    ;
-    getUserByUsername(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    createUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    modifyUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    deleteUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
+const resend_1 = require("resend");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+let resend;
+function createKey(key) {
+    if (key)
+        resend = new resend_1.Resend(key);
+    throw new Error('Invalid API key');
 }
-exports.UserController = UserController;
-;
+class Email {
+    constructor(from, to, subject, html) {
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+        this.html = html;
+        createKey(process.env.API_RESEND_KEY);
+    }
+    sendEmail(email) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let retry = 0;
+            try {
+                while (retry < 3) {
+                    return yield resend.emails.send(email);
+                }
+            }
+            catch (e) {
+                retry++;
+                throw ('Email send failed: ' + e);
+            }
+        });
+    }
+}

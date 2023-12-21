@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CtshirtController = void 0;
-const clothes_schema_1 = require("../schema/clothes.schema");
 class CtshirtController {
     getAllTshirts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,12 +40,6 @@ class CtshirtController {
     ;
     createTshirt(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
-            let schema = new clothes_schema_1.CClothesSchema(req.body);
-            if (schema instanceof clothes_schema_1.CClothesSchema) {
-                schema.createSchema(schema);
-                res.json(schema);
-            }
             //TODO: Write body of request, and save in database.
         });
     }

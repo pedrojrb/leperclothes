@@ -1,24 +1,25 @@
+import { validate } from "class-validator";
 import { CBaseSchema } from "./schema";
 import mongoose from 'mongoose';
 
-type TSizeClothes = 'S' | 'M' | 'L' | 'XL' | 'XXL' | 'XXXL';
+enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
 
 type TColorClothes = 'BLACK' | 'WHITE' | 'GRAY' | 'GREEN' | 'YELLOW' | 'RED' | 'BLUE' | 'PURPLE';
 
 interface IClothes {
     name: object
-    size: Object,
-    color: Object,
-    price: Object,
-    created_at: Object
+    size: object,
+    color: object,
+    price: object,
+    created_at: object
 }
 export class CClothesSchema extends CBaseSchema implements IClothes{
 
-    name: Object;
-    size: Object;
-    color: Object;
-    price: Object;
-    created_at: Object;
+    name: object;
+    size: object;
+    color: object;
+    price: object;
+    created_at: object;
 
     constructor(clothes: IClothes) {
         super();
@@ -27,12 +28,11 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
         this.color = clothes.color;
         this.price = clothes.price;
         this.created_at = clothes.created_at;
+        this.createSchema(this);
     }
 
     public createSchema(schema: CClothesSchema): void {
         try{
-            this.validateSchema(schema);
-
             let clothesSchema = new mongoose.Schema(schema);
 
             if (clothesSchema instanceof mongoose.Schema){
@@ -44,7 +44,7 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
         }
     }
 
-    public validateSchema(schema: CClothesSchema): void {
+    /* public validateSchema(schema: CClothesSchema): void {
       //TODO: Feature of this method. Structure of schema is different from schema neccessary.
     }
 
@@ -68,5 +68,24 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
         } catch (error) {
             throw new Error('Error while validating price: ' + error);
         }
-    }
+    } */
 }
+
+
+export const clothesSchema = new CClothesSchema({
+    name:{
+        type: "String"
+    },
+    size: {
+        type: "String"
+    },
+    color: {
+        type: "String"
+    },
+    price: {
+        type: "String"
+    },
+    created_at: {
+        type: "Date"
+    }
+});

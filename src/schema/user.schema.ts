@@ -12,28 +12,30 @@ created_at: Date (default: current date and time)
  */
 
 interface IUser {
-    username: string,
-    email: string,
-    password: string,
-    deleted: boolean,
-    created_at: Date,
-    verificated: boolean
+    username: object,
+    email: object,
+    password: object,
+    deleted: object,
+    created_at: object,
+    verificated: object
 }
 export class CUserSchema extends CBaseSchema implements IUser{
 
-    username: string;
-    email: string;
-    password: string;
-    deleted: boolean = false;
-    created_at: Date;
-    verificated: boolean = false;
+    username: object;
+    email: object;
+    password: object;
+    deleted: object;
+    created_at: object;
+    verificated: object;
 
     constructor(user: IUser){
         super();
         this.username = user.username;
         this.email = user.email;
         this.password = user.password;
+        this.deleted = user.deleted;
         this.created_at = user.created_at;
+        this.verificated = user.verificated;
         this.createSchema(this);
     }
 
@@ -53,7 +55,7 @@ export class CUserSchema extends CBaseSchema implements IUser{
         }
     }
    
-    public validateSchema(schema: CUserSchema): void {
+    /* public validateSchema(schema: CUserSchema): void {
         this.validateUsername(schema.username);
         this.validateEmail(schema.email);
         this.validatePassword(schema.password);
@@ -109,6 +111,28 @@ export class CUserSchema extends CBaseSchema implements IUser{
         } catch (err) {
             throw err;
         }
-    }
+    } */
 
+    
 }
+
+export const userSchema = new CUserSchema({
+    username:{
+        type: "String"
+    },
+    email: {
+        type: "String"
+    },
+    password: {
+        type: "String"
+    },
+    deleted: {
+        type: "Boolean"
+    },
+    created_at: {
+        type: "Date"
+    },
+    verificated:{
+        type:"Boolean"
+    }
+});
