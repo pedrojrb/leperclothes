@@ -4,6 +4,7 @@ import cors from "cors";
 import { ServerConfiguration } from "./config/config";
 import { UserRouter } from "./routes/users.router";
 import { CtshirtRouter } from "./routes/tshirt.router";
+import { CRouter } from "./routes/router";
 
 /**
  * Class main for execute application.
@@ -22,7 +23,9 @@ class ServerBoostrap extends ServerConfiguration {
         this.app.use(morgan('dev'));
         this.app.use(cors());
         
-        this.app.use('/api/',this.router())
+        this.app.use('/api/',(req: express.Request,res: express.Response)=>{
+            //TODO: Developer consult to all tshirts in database.
+        },this.router());
         this.listen();
 
     }

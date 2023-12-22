@@ -9,7 +9,6 @@ const cors_1 = __importDefault(require("cors"));
 const config_1 = require("./config/config");
 const users_router_1 = require("./routes/users.router");
 const tshirt_router_1 = require("./routes/tshirt.router");
-const db_config_1 = require("./config/database/db.config");
 /**
  * Class main for execute application.
  */
@@ -26,7 +25,9 @@ class ServerBoostrap extends config_1.ServerConfiguration {
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use((0, morgan_1.default)('dev'));
         this.app.use((0, cors_1.default)());
-        this.app.use('/api/', this.router());
+        this.app.use('/api/', (req, res) => {
+            //TODO: Developer consult to all tshirts in database.
+        }, this.router());
         this.listen();
     }
     /**
@@ -34,9 +35,6 @@ class ServerBoostrap extends config_1.ServerConfiguration {
      */
     listen() {
         this.app.listen(this.port, () => {
-            (0, db_config_1.databaseConnection)()
-                .then(() => { console.log('Database connection established'); })
-                .catch(() => { console.log('Error connecting to database'); });
             console.log("Server is listening on port " + this.port);
         });
     }
