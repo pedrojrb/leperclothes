@@ -1,5 +1,5 @@
 import * as express from "express";
-import { CClothesSchema } from "../schema/clothes.schema";
+import { CClothesSchema } from "../config/database/schema/clothes.schema";
 import { databaseConnection } from "../config/database/db.config";
 
 export class CtshirtController{

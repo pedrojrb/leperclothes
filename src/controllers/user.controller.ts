@@ -1,6 +1,6 @@
 import * as express from "express";
 import mongoose from "mongoose";
-import { userSchema } from "../schema/user.schema";
+import { userSchema } from "../config/database/schema/user.schema";
 
 export class UserController{
 
