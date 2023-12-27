@@ -10,16 +10,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CtshirtController = void 0;
+const clothes_schema_1 = require("../config/database/schema/clothes.schema");
+const tshirt_model_1 = require("../config/database/models/tshirt.model");
 class CtshirtController {
     getAllTshirts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 //TODO: Create new connection to database and get tshirts data.
-                if (res.statusCode === 200) {
+                const tshirtModel = new tshirt_model_1.CTshirtModel('tshirt', clothes_schema_1.clothesSchema);
+                tshirtModel.createModel()
+                    .then(response => {
+                    console.log('response', response);
+                    res.json(response);
+                });
+                /* if(res.statusCode === 200){
+    
                     res.status(200).send(JSON.stringify({
-                        "tshirts": "shirts"
-                    }));
-                }
+                    "tshirts":"shirts"
+                    }))
+                } */
             }
             catch (err) {
                 //TODO: Create handle error for each type error.

@@ -1,9 +1,9 @@
 import { databaseConnection } from '../db.config';
 import { CBaseSchema } from '../schema/schema';
 import { CBaseModel } from './model';
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 
-export class CTshirtSchema extends CBaseModel {
+export class CTshirtModel extends CBaseModel {
 
     name: string;
     schema: CBaseSchema;
@@ -14,26 +14,36 @@ export class CTshirtSchema extends CBaseModel {
         this.schema = schema;
     }
 
-    async createModel(name: string, schema: CBaseSchema): Promise<void> {
+    async createModel(): Promise<void> {
         try{
-            const connection = await databaseConnection();
+            //Create connection to database
+            
+            databaseConnection()
+            .then(conn => {
+                
+                console.log('Connection to database successfully created: ' + conn);
 
-            if(connection){
-                let userModel = new mongoose.Model(name, schema);
+                let tshirtModel = mongoose.model('tshirt', this.schema);
 
+               let tshirt = new mongoose.Model(this.name, {
+                name: 'Test',
+                color: 'Red',
+                size: 'L',
+                created_at : new Date()
+                });
 
-                if(userModel instanceof mongoose.Model){
+                if(tshirt instanceof mongoose.Model){
 
-                    console.log('Model created: ',  userModel);
-
-                    let savedTshirt = await userModel.save();
+                    let savedTshirt = tshirt.save();
 
                     if(savedTshirt) {
                         console.log('Tshirt saved', savedTshirt);
-                        connection.disconnect();
+                        
                     }
-                } 
-            }
+                }
+            });
+
+            
 
         } catch (e){
             throw Error('Error creating model: ' + e)

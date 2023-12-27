@@ -9,33 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-class UserController {
-    getAllUsers(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+exports.CBaseModel = void 0;
+class CBaseModel {
+    constructor(name, schema) {
+        this.name = name;
+        this.schema = schema;
     }
-    ;
-    getUserByUsername(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    createUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    modifyUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    ;
-    deleteUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+    createModel(name, schema) {
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     ;
 }
-exports.UserController = UserController;
-;
+exports.CBaseModel = CBaseModel;

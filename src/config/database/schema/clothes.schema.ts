@@ -1,6 +1,6 @@
 import { validate } from "class-validator";
 import { CBaseSchema } from "./schema";
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 
 enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
 
@@ -13,7 +13,7 @@ interface IClothes {
     price: object,
     created_at: object
 }
-export class CClothesSchema extends CBaseSchema implements IClothes{
+export class CTshirtSchema extends CBaseSchema implements IClothes{
 
     name: object;
     size: object;
@@ -31,7 +31,7 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
         this.createSchema(this);
     }
 
-    public createSchema(schema: CClothesSchema): void {
+    public createSchema(schema: CTshirtSchema): void {
         try{
             let clothesSchema = new mongoose.Schema(schema);
 
@@ -44,7 +44,7 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
         }
     }
 
-    /* public validateSchema(schema: CClothesSchema): void {
+    /* public validateSchema(schema: CTshirtSchema): void {
       //TODO: Feature of this method. Structure of schema is different from schema neccessary.
     }
 
@@ -72,7 +72,7 @@ export class CClothesSchema extends CBaseSchema implements IClothes{
 }
 
 
-export const clothesSchema = new CClothesSchema({
+export const clothesSchema = new CTshirtSchema({
     name:{
         type: "String"
     },
