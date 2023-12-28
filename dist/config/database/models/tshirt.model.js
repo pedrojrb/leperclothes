@@ -22,7 +22,7 @@ class CTshirtModel extends model_1.CBaseModel {
         this.name = name;
         this.schema = schema;
     }
-    createModel() {
+    createModel(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 //variables are created for save model and create new documents.
@@ -36,7 +36,7 @@ class CTshirtModel extends model_1.CBaseModel {
                         //intialize my variable creating Model object
                         tshirtModel = mongoose_1.default.model('tshirt', new mongoose_1.default.Schema(this.schema));
                         //TODO: Send inside tshirtMode constructor request body data.
-                        tshirt = new tshirtModel();
+                        tshirt = new tshirtModel(req.body);
                         //When tshirt is created can i follow with the save data in the database
                         if (tshirt instanceof mongoose_1.default.Model) {
                             tshirt.save()

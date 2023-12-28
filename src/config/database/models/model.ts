@@ -1,4 +1,5 @@
 import { CBaseSchema } from "../schema/schema";
+import * as express from 'express';
 
 interface IModel {
     name: string;
@@ -15,6 +16,6 @@ export abstract class CBaseModel implements  IModel {
         this.schema = schema;
     }
 
-    async createModel(name: string, schema: CBaseSchema): Promise<void>{};
+    async createModel(req: express.Request): Promise<any>{};
 
 }

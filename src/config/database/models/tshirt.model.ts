@@ -2,6 +2,7 @@ import { databaseConnection } from '../db.config';
 import { CBaseSchema } from '../schema/schema';
 import { CBaseModel } from './model';
 import mongoose, { Model } from 'mongoose';
+import * as express from 'express';
 
 export class CTshirtModel extends CBaseModel {
 
@@ -14,7 +15,7 @@ export class CTshirtModel extends CBaseModel {
         this.schema = schema;
     }
 
-    async createModel(): Promise<void> {
+    async createModel(req: express.Request): Promise<void> {
         try{
             //variables are created for save model and create new documents.
 
@@ -34,7 +35,7 @@ export class CTshirtModel extends CBaseModel {
 
                         //TODO: Send inside tshirtMode constructor request body data.
 
-                        tshirt = new tshirtModel();
+                        tshirt = new tshirtModel(req.body);
     
                     //When tshirt is created can i follow with the save data in the database
 

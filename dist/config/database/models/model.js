@@ -15,7 +15,7 @@ class CBaseModel {
         this.name = name;
         this.schema = schema;
     }
-    createModel(name, schema) {
+    createModel(req) {
         return __awaiter(this, void 0, void 0, function* () { });
     }
     ;

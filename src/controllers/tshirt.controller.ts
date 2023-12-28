@@ -16,37 +16,29 @@ export class CtshirtController{
     };
 
     createTshirt(req: express.Request, res: express.Response){
-        //TODO: Write body of request, and save in database.
 
         try{
 
-            //TODO: Create new connection to database and get tshirts data.
-
             const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
 
-            tshirtModel.createModel()
+            tshirtModel.createModel(req)
             .then(response => {
-                res.status(200).json(response)
+                res.status(201).json({"result": "ok", "data": response});
                 
             })
-            .catch(err => {throw new Error('Error durating creating model: ' + err)});
+            .catch(err => {
+                res.status(400).json({ result:"error",err: err})
+                throw new Error('Error durating creating model: ' + err)});
            
-            
-            /* if(res.statusCode === 200){
-
-                res.status(200).send(JSON.stringify({
-                "tshirts":"shirts"       
-                }))
-            } */
+    
            
         } catch ( err ){
-            //TODO: Create handle error for each type error.
             if(res.statusCode){
 
                 throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`)
             }
 
-            throw err;
+            throw new Error ('Error creating new tshirt: ' + err);
         }
     };
 
