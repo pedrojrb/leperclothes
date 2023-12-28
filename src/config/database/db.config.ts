@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export async function databaseConnection() {
     let retry: number = 0;
-    let db;
+    
     try {
     
         while (retry < 3) {
@@ -13,8 +13,6 @@ export async function databaseConnection() {
                             connectTimeoutMS: 1000,
                             socketTimeoutMS: 1000
                     });
-                   
-                
                    
                 }
             } catch (error) {

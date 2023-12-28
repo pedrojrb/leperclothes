@@ -25,24 +25,29 @@ class CTshirtModel extends model_1.CBaseModel {
     createModel() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                //Create connection to database
+                //variables are created for save model and create new documents.
+                let tshirtModel;
+                let tshirt;
+                //Call connection to database
                 (0, db_config_1.databaseConnection)()
                     .then(conn => {
-                    console.log('Connection to database successfully created: ' + conn);
-                    let tshirtModel = mongoose_1.default.model('tshirt', this.schema);
-                    let tshirt = new mongoose_1.default.Model(this.name, {
-                        name: 'Test',
-                        color: 'Red',
-                        size: 'L',
-                        created_at: new Date()
-                    });
-                    if (tshirt instanceof mongoose_1.default.Model) {
-                        let savedTshirt = tshirt.save();
-                        if (savedTshirt) {
-                            console.log('Tshirt saved', savedTshirt);
+                    if (conn) {
+                        console.log("Connection established to database");
+                        //intialize my variable creating Model object
+                        tshirtModel = mongoose_1.default.model('tshirt', new mongoose_1.default.Schema(this.schema));
+                        //TODO: Send inside tshirtMode constructor request body data.
+                        tshirt = new tshirtModel();
+                        //When tshirt is created can i follow with the save data in the database
+                        if (tshirt instanceof mongoose_1.default.Model) {
+                            tshirt.save()
+                                .then((result) => {
+                                console.log('Tshirt saved', result);
+                            })
+                                .catch(err => console.log('Error durating save tshirt in database: ' + err));
                         }
                     }
-                });
+                })
+                    .catch(err => { throw new Error('Error while connecting to database: ' + err); });
             }
             catch (e) {
                 throw Error('Error creating model: ' + e);

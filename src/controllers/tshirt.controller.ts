@@ -7,6 +7,17 @@ import { CTshirtModel } from "../config/database/models/tshirt.model";
 export class CtshirtController{
 
     async getAllTshirts(req: express.Request, res: express.Response){
+        
+    };
+
+    async getTshirtByTshirtname(req: express.Request, res: express.Response){
+        //TODO: Write req.params and use that value for filter when get data of database.
+        //TODO: Create new connection to database and get tshirts data.
+    };
+
+    createTshirt(req: express.Request, res: express.Response){
+        //TODO: Write body of request, and save in database.
+
         try{
 
             //TODO: Create new connection to database and get tshirts data.
@@ -15,10 +26,10 @@ export class CtshirtController{
 
             tshirtModel.createModel()
             .then(response => {
-                console.log('response', response);
-                res.json(response);
+                res.status(200).json(response)
                 
             })
+            .catch(err => {throw new Error('Error durating creating model: ' + err)});
            
             
             /* if(res.statusCode === 200){
@@ -37,15 +48,6 @@ export class CtshirtController{
 
             throw err;
         }
-    };
-
-    async getTshirtByTshirtname(req: express.Request, res: express.Response){
-        //TODO: Write req.params and use that value for filter when get data of database.
-        //TODO: Create new connection to database and get tshirts data.
-    };
-
-    async createTshirt(req: express.Request, res: express.Response){
-        //TODO: Write body of request, and save in database.
     };
 
     async modifyTshirt(req: express.Request, res: express.Response){

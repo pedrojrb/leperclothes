@@ -16,32 +16,42 @@ export class CTshirtModel extends CBaseModel {
 
     async createModel(): Promise<void> {
         try{
-            //Create connection to database
+            //variables are created for save model and create new documents.
+
+            let tshirtModel;
+            let tshirt;
+            
+            //Call connection to database
             
             databaseConnection()
             .then(conn => {
-                
-                console.log('Connection to database successfully created: ' + conn);
+        
+                if(conn){
+                    console.log("Connection established to database");
 
-                let tshirtModel = mongoose.model('tshirt', this.schema);
+                        //intialize my variable creating Model object
+                        tshirtModel = mongoose.model('tshirt', new mongoose.Schema(this.schema));
 
-               let tshirt = new mongoose.Model(this.name, {
-                name: 'Test',
-                color: 'Red',
-                size: 'L',
-                created_at : new Date()
-                });
+                        //TODO: Send inside tshirtMode constructor request body data.
 
-                if(tshirt instanceof mongoose.Model){
+                        tshirt = new tshirtModel();
+    
+                    //When tshirt is created can i follow with the save data in the database
 
-                    let savedTshirt = tshirt.save();
+                    if(tshirt instanceof mongoose.Model){
+    
+                        tshirt.save()
+                        .then((result) =>{
+                            console.log('Tshirt saved', result);
+                        })
+                        .catch(err => console.log('Error durating save tshirt in database: ' + err));
 
-                    if(savedTshirt) {
-                        console.log('Tshirt saved', savedTshirt);
-                        
                     }
+
                 }
-            });
+                
+            })
+            .catch(err => {throw new Error('Error while connecting to database: ' + err)});
 
             
 
