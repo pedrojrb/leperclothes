@@ -1,4 +1,4 @@
-import { databaseConnection } from '../db.config';
+import { databaseConnection, disconnectDatabase } from '../db.config';
 import { CBaseSchema } from '../schema/schema';
 import { CBaseModel } from './model';
 import mongoose, { Model } from 'mongoose';
@@ -50,6 +50,12 @@ export class CTshirtModel extends CBaseModel {
                     }
 
                 }
+
+            disconnectDatabase()
+            .then((result) => { 
+                console.log('Disconnect Database connection: ' + result);
+                return result; })
+            .catch(err => { throw new Error('Error while disconnecting database: ' + err)});
                 
             })
             .catch(err => {throw new Error('Error while connecting to database: ' + err)});
