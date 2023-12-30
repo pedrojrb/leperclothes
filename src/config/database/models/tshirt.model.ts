@@ -1,8 +1,9 @@
 import { databaseConnection, disconnectDatabase } from '../db.config';
 import { CBaseSchema } from '../schema/schema';
 import { CBaseModel } from './model';
-import mongoose, { Model } from 'mongoose';
-import * as express from 'express';
+import mongoose from 'mongoose';
+import { clothesSchema } from '../schema/clothes.schema';
+import { CUserSchema } from '../schema/user.schema';
 
 export class CTshirtModel extends CBaseModel {
 
@@ -15,57 +16,12 @@ export class CTshirtModel extends CBaseModel {
         this.schema = schema;
     }
 
-    async createModel(req: express.Request): Promise<void> {
+    createModel() {
         try{
-            //variables are created for save model and create new documents.
-
-            let tshirtModel;
-            let tshirt;
-            
-            //Call connection to database
-            
-            databaseConnection()
-            .then(conn => {
+            return mongoose.model('tshirt',new mongoose.Schema(clothesSchema));
         
-                if(conn){
-                    console.log("Connection established to database");
-
-                        //intialize my variable creating Model object
-                        tshirtModel = mongoose.model('tshirt', new mongoose.Schema(this.schema));
-
-                        //TODO: Send inside tshirtMode constructor request body data.
-
-                        tshirt = new tshirtModel(req.body);
-    
-                    //When tshirt is created can i follow with the save data in the database
-
-                    if(tshirt instanceof mongoose.Model){
-    
-                        tshirt.save()
-                        .then((result) =>{
-                            console.log('Tshirt saved', result);
-                        })
-                        .catch(err => console.log('Error durating save tshirt in database: ' + err));
-
-                    }
-
-                }
-
-            disconnectDatabase()
-            .then((result) => { 
-                console.log('Disconnect Database connection: ' + result);
-                return result; })
-            .catch(err => { throw new Error('Error while disconnecting database: ' + err)});
-                
-            })
-            .catch(err => {throw new Error('Error while connecting to database: ' + err)});
-
-            
-
-        } catch (e){
-            throw Error('Error creating model: ' + e)
+        } catch(err){
+            throw new Error('Error creating model: '+ err);
         }
-        
-        
     }
 }

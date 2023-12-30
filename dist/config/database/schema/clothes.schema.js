@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.clothesSchema = exports.CTshirtSchema = void 0;
 const schema_1 = require("./schema");
 const mongoose_1 = __importDefault(require("mongoose"));
+const clothes_validations_1 = require("../middleware/clothes.validations");
 var TSizeClothes;
 (function (TSizeClothes) {
     TSizeClothes[TSizeClothes["S"] = 0] = "S";
@@ -31,7 +32,6 @@ class CTshirtSchema extends schema_1.CBaseSchema {
             let clothesSchema = new mongoose_1.default.Schema(schema);
             if (clothesSchema instanceof mongoose_1.default.Schema) {
                 console.log('Schema of clothes created successfully');
-                return;
             }
         }
         catch (error) {
@@ -42,7 +42,9 @@ class CTshirtSchema extends schema_1.CBaseSchema {
 exports.CTshirtSchema = CTshirtSchema;
 exports.clothesSchema = new CTshirtSchema({
     name: {
-        type: "String"
+        type: "String",
+        unique: [true, 'Name is required'],
+        validate: [clothes_validations_1.validateName, 'Name required 5 characters minimum length and 100 maximum length']
     },
     size: {
         type: "String"

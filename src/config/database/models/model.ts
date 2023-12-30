@@ -1,3 +1,4 @@
+import { Model } from "mongoose";
 import { CBaseSchema } from "../schema/schema";
 import * as express from 'express';
 
@@ -16,6 +17,6 @@ export abstract class CBaseModel implements  IModel {
         this.schema = schema;
     }
 
-    async createModel(req: express.Request): Promise<any>{};
+    createModel(){};
 
 }

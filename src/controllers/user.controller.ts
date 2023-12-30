@@ -15,8 +15,8 @@ export class UserController{
         
     };
 
-    async createUser(req: express.Request, res: express.Response){
-        try{
+   async createUser(req: express.Request, res: express.Response){
+        /* try{
 
             const userModel = new CUserModel('user', userSchema);
 
@@ -38,7 +38,7 @@ export class UserController{
             }
 
             throw new Error ('Error creating new user: ' + err);
-        }
+        } */
     };
 
     async modifyUser(req: express.Request, res: express.Response){

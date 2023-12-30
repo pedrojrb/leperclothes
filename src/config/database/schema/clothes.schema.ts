@@ -1,6 +1,7 @@
 import { validate } from "class-validator";
 import { CBaseSchema } from "./schema";
 import mongoose, { mongo } from 'mongoose';
+import { validateName } from "../middleware/clothes.validations";
 
 enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
 
@@ -37,18 +38,15 @@ export class CTshirtSchema extends CBaseSchema implements IClothes{
 
             if (clothesSchema instanceof mongoose.Schema){
                 console.log('Schema of clothes created successfully');
-                return;
+                
             }
         } catch (error) {
             throw new Error('Error creating schema: ' + error);
         }
     }
 
-    /* public validateSchema(schema: CTshirtSchema): void {
-      //TODO: Feature of this method. Structure of schema is different from schema neccessary.
-    }
 
-    protected validateName(name: string): void {
+    /* protected validateName(name: string): void {
         try{
             if(!name) throw new Error('Name is required');
 
@@ -74,7 +72,9 @@ export class CTshirtSchema extends CBaseSchema implements IClothes{
 
 export const clothesSchema = new CTshirtSchema({
     name:{
-        type: "String"
+        type: "String",
+        unique: [true, 'Name is required'],
+        validate: [validateName, 'Name required 5 characters minimum length and 100 maximum length']
     },
     size: {
         type: "String"

@@ -15,7 +15,7 @@ export class CUserModel extends CBaseModel {
         this.schema = schema;
     }
 
-    async createModel(req: express.Request): Promise<any> {
+   /*  createModel(req: express.Request): Promise<any> {
         try{
             //variables are created for save model and create new documents.
 
@@ -65,5 +65,5 @@ export class CUserModel extends CBaseModel {
         }
         
         
-    }
+    } */
 }
