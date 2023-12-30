@@ -1,11 +1,15 @@
 import { validate } from "class-validator";
 import { CBaseSchema } from "./schema";
 import mongoose, { mongo } from 'mongoose';
-import { validateName } from "../middleware/clothes.validations";
+import { validateColor, validateName, validatePrice, validateSize } from "../middleware/clothes.validations";
 
-enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
+export enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
 
-type TColorClothes = 'BLACK' | 'WHITE' | 'GRAY' | 'GREEN' | 'YELLOW' | 'RED' | 'BLUE' | 'PURPLE';
+export type TColorClothes = {
+    red: number,
+    green: number,
+    blue: number
+};
 
 interface IClothes {
     name: object
@@ -74,18 +78,22 @@ export const clothesSchema = new CTshirtSchema({
     name:{
         type: "String",
         unique: [true, 'Name is required'],
-        validate: [validateName, 'Name required 5 characters minimum length and 100 maximum length']
+        validate: [validateName, 'Name required between 5 and 100 characters length']
     },
     size: {
-        type: "String"
+        type: "String",
+        validate:[validateSize, 'Size availables are: ' + Object.values(TSizeClothes) ]   
     },
     color: {
-        type: "String"
+        type: "Object",
+        validate: [validateColor, 'RGB value must be a number between 0 and 255']
     },
     price: {
-        type: "String"
+        type: "String",
+        validate: [validatePrice, 'Price cannot be less than 0']
     },
     created_at: {
-        type: "Date"
+        type: "Date",
+        default: new Date()
     }
 });

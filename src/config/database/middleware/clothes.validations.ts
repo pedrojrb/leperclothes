@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import { TSizeClothes, TColorClothes } from '../schema/clothes.schema';
 
 /**
  * This function is responsible for validating data before sending to the database.
@@ -12,6 +12,16 @@ export function validateName(value: string): boolean {
 
 }
 
-export function validateSize(schema: Schema): void {
+export function validateSize(value: TSizeClothes): value is TSizeClothes {
+    return Object.values(TSizeClothes).includes(value)    
+}
 
+export function validateColor(value: TColorClothes) {
+    let allValues: Array<number> = Object.values(value);
+
+    return allValues.every(value => value >= 0 && value <= 255);
+}
+
+export function validatePrice(value: number): boolean {
+    return value > 0;
 }

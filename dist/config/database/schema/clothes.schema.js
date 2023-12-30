@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clothesSchema = exports.CTshirtSchema = void 0;
+exports.clothesSchema = exports.CTshirtSchema = exports.TSizeClothes = void 0;
 const schema_1 = require("./schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const clothes_validations_1 = require("../middleware/clothes.validations");
@@ -15,7 +15,7 @@ var TSizeClothes;
     TSizeClothes[TSizeClothes["XL"] = 3] = "XL";
     TSizeClothes[TSizeClothes["XXL"] = 4] = "XXL";
     TSizeClothes[TSizeClothes["XXXL"] = 5] = "XXXL";
-})(TSizeClothes || (TSizeClothes = {}));
+})(TSizeClothes || (exports.TSizeClothes = TSizeClothes = {}));
 ;
 class CTshirtSchema extends schema_1.CBaseSchema {
     constructor(clothes) {
@@ -44,18 +44,22 @@ exports.clothesSchema = new CTshirtSchema({
     name: {
         type: "String",
         unique: [true, 'Name is required'],
-        validate: [clothes_validations_1.validateName, 'Name required 5 characters minimum length and 100 maximum length']
+        validate: [clothes_validations_1.validateName, 'Name required between 5 and 100 characters length']
     },
     size: {
-        type: "String"
+        type: "String",
+        validate: [clothes_validations_1.validateSize, 'Size availables are: ' + Object.values(TSizeClothes)]
     },
     color: {
-        type: "String"
+        type: "Object",
+        validate: [clothes_validations_1.validateColor, 'RGB value must be a number between 0 and 255']
     },
     price: {
-        type: "String"
+        type: "String",
+        validate: [clothes_validations_1.validatePrice, 'Price cannot be less than 0']
     },
     created_at: {
-        type: "Date"
+        type: "Date",
+        default: new Date()
     }
 });

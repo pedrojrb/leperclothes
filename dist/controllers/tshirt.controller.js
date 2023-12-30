@@ -57,8 +57,7 @@ class CtshirtController {
                             }
                         })
                             .catch(err => {
-                            res.status(501).json({ result: "error", error: err });
-                            throw new Error('Error durating save tshirt in database: ' + err);
+                            res.status(501).json({ result: "error", error: err.message });
                         });
                     }
                 }
