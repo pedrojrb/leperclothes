@@ -82,6 +82,7 @@ export const clothesSchema = new CTshirtSchema({
     },
     size: {
         type: "String",
+        required: [true, 'Size is required'],
         validate:[validateSize, 'Size availables are: ' + Object.values(TSizeClothes) ]   
     },
     color: {

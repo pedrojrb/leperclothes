@@ -1,6 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import { CBaseSchema } from "./schema";
 import { validate } from "class-validator";
+import { validateEmail, validatePassword, validateUsername } from "../middleware/users.validations";
 
 /* User Schema:
 
@@ -54,85 +55,37 @@ export class CUserSchema extends CBaseSchema implements IUser{
             throw new Error(`Error creating schema: ${error}`);
         }
     }
-   
-    /* public validateSchema(schema: CUserSchema): void {
-        this.validateUsername(schema.username);
-        this.validateEmail(schema.email);
-        this.validatePassword(schema.password);
-    }
-
-    private validateUsername(username: string): void {
-
-        let regex: Readonly<RegExp> = new RegExp('^[a-z0-9]+$');
-
-        try{
-            username = username.toLowerCase();
-
-            if(!username || username.length <= 0) throw new Error(`Username is required`);
-            
-            if(username.length > 10) throw new Error('Invalid username, maximum length is 10.');
-            
-            if(!regex.test(username)) throw new Error('Username contains invalid characters. n\ Characters validate are alphanumeric only.');
-            
-            return;
-
-        } catch(err){
-            throw err;
-        }
-    }
-
-    private validateEmail(email: string): void {
-        let regex: Readonly<RegExp> = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-
-        try{
-            if(!email || email.length <= 0) throw new Error('Please enter an email address');
-
-            if(!regex.test(email)) throw new Error('Invalid email. n\ Please enter a valid email address.');
-
-            return;
-
-        } catch(err){
-            throw err;
-        }
-    }
-
-    private validatePassword(password: string): void {
-        let regex = new RegExp(`^(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\-])(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*`);
-
-        try {
-            if(!password || password.length <= 0) throw new Error('Please enter a password');
-
-            if(!regex.test(password)) throw new Error('Password has invalid characters');
-
-            if(password.length < 8) throw new Error('Password must be at least 8 characters');
-
-            if(password.length > 12) throw new Error('Password  must be 12 characters maximum');
-
-        } catch (err) {
-            throw err;
-        }
-    } */
-
     
 }
 
 export const userSchema = new CUserSchema({
     username:{
-        type: "String"
+        type: "String",
+        required: true,
+        unique: [true, 'Username already in use, please choose a different'],
+        validate: validateUsername
     },
     email: {
-        type: "String"
+        type: "String",
+        required: true,
+        unique: [true, 'Email already in use, please choose a different'],
+        validate: validateEmail
     },
     password: {
-        type: "String"
+        type: "String",
+        required: true,
+        validate: validatePassword
     },
     deleted: {
-        type: "Boolean"
+        type: "Boolean",
+        default: false
     },
     created_at: {
-        type: "Date"
+        type: "Date",
+        default: new Date()
     },
     verificated:{
-        type:"Boolean"
+        type:"Boolean",
+        default: false
     }
 });
