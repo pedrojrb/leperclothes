@@ -17,7 +17,7 @@ export class CtshirtController{
 
     createTshirt(req: express.Request, res: express.Response){
 
-        try{
+       /*  try{
             let tshirt: mongoose.Model<CTshirtSchema>, document:  mongoose.Document<CTshirtSchema | CTshirtModel | object>;
             
             const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
@@ -40,15 +40,6 @@ export class CtshirtController{
                             if(result){
                                 console.log('Tshirt saved', result);
 
-                                /* disconnectDatabase()
-                                .then((result) => { 
-                                    console.log('Disconnect Database connection: ' + result);
-                                return result; 
-                                })
-                                .catch(err => { 
-                                    throw new Error('Error while disconnecting database: ' + err)}
-                                ); */
-                                
                                 return res.status(201).json({"result":"ok", "response": result});
 
                             }
@@ -69,7 +60,7 @@ export class CtshirtController{
 
         } catch (e){
             throw Error('Error creating model: ' + e)
-        }
+        } */
         }
         
         

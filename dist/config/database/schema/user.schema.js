@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userSchema = exports.CUserSchema = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const schema_1 = require("./schema");
+const users_validations_1 = require("../middleware/users.validations");
 class CUserSchema extends schema_1.CBaseSchema {
     constructor(user) {
         super();
@@ -32,23 +33,35 @@ class CUserSchema extends schema_1.CBaseSchema {
     }
 }
 exports.CUserSchema = CUserSchema;
-exports.userSchema = new CUserSchema({
+let user = new CUserSchema({
     username: {
-        type: "String"
+        type: "String",
+        required: true,
+        unique: [true, 'Username already in use, please choose a different'],
+        validate: users_validations_1.validateUsername
     },
     email: {
-        type: "String"
+        type: "String",
+        required: true,
+        unique: [true, 'Email already in use, please choose a different'],
+        validate: users_validations_1.validateEmail
     },
     password: {
-        type: "String"
+        type: "String",
+        required: true,
+        validate: users_validations_1.validatePassword
     },
     deleted: {
-        type: "Boolean"
+        type: "Boolean",
+        default: false
     },
     created_at: {
-        type: "Date"
+        type: "Date",
+        default: new Date()
     },
     verificated: {
-        type: "Boolean"
+        type: "Boolean",
+        default: false
     }
 });
+exports.userSchema = user;

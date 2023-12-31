@@ -8,8 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const user_schema_1 = require("../config/database/schema/user.schema");
+const users_model_1 = require("../config/database/models/users.model");
+const db_config_1 = require("../config/database/db.config");
 class UserController {
     getAllUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,32 +30,39 @@ class UserController {
     ;
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            /* try{
-    
-                const userModel = new CUserModel('user', userSchema);
-    
-                userModel.createModel(req)
-                .then(response => {
-                    res.status(201).json({"result": "ok", "data": response});
-                    
+            try {
+                let user;
+                let document;
+                const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+                user = userModel.createModel();
+                document = new user(req.body);
+                (0, db_config_1.databaseConnection)()
+                    .then(conn => {
+                    if (conn) {
+                        console.log("Connection established to database: " + conn);
+                        if (document && document instanceof mongoose_1.default.Model) {
+                            document.save()
+                                .then((result) => {
+                                if (result) {
+                                    console.log('User saved', result);
+                                    return res.status(201).json({ "result": "ok", "response": result });
+                                }
+                            })
+                                .catch(err => {
+                                res.status(501).json({ result: "error", error: err.message });
+                            });
+                        }
+                    }
                 })
-                .catch(err => {
-                    res.status(400).json({ result:"error",err: err})
-                    throw new Error('Error durating creating model: ' + err)});
-               
-        
-               
-            } catch ( err ){
-                if(res.statusCode){
-    
-                    throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`)
-                }
-    
-                throw new Error ('Error creating new user: ' + err);
-            } */
+                    .catch(err => {
+                    res.status(500).send().json({ result: "error", error: err });
+                });
+            }
+            catch (err) {
+                throw err;
+            }
         });
     }
-    ;
     modifyUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
         });

@@ -1,7 +1,8 @@
 import * as express from "express";
 import mongoose from "mongoose";
-import { userSchema } from "../config/database/schema/user.schema";
+import { CUserSchema, userSchema } from '../config/database/schema/user.schema';
 import { CUserModel } from "../config/database/models/users.model";
+import { databaseConnection } from "../config/database/db.config";
 
 export class UserController{
 
@@ -16,31 +17,49 @@ export class UserController{
     };
 
    async createUser(req: express.Request, res: express.Response){
-        /* try{
-
+        try{
+            let user ;
+            let document:  mongoose.Document<CUserSchema | CUserModel | object>;
+            
             const userModel = new CUserModel('user', userSchema);
 
-            userModel.createModel(req)
-            .then(response => {
-                res.status(201).json({"result": "ok", "data": response});
-                
+            user = userModel.createModel();
+
+            document = new user(req.body);
+
+
+            databaseConnection()
+            .then(conn => {
+        
+                if(conn){
+                    console.log("Connection established to database: " + conn);
+
+                    if(document && document instanceof mongoose.Model){
+
+                        document.save()
+                        .then((result) =>{
+                            if(result){
+                                console.log('User saved', result);
+                                
+                                return res.status(201).json({"result":"ok", "response": result});
+
+                            }
+                        })
+                        .catch(err => {
+                            res.status(501).json({ result: "error", error: err.message})});
+                    }
+
+                }
+
+        
             })
             .catch(err => {
-                res.status(400).json({ result:"error",err: err})
-                throw new Error('Error durating creating model: ' + err)});
-           
-    
-           
-        } catch ( err ){
-            if(res.statusCode){
-
-                throw new Error(`HTTP Error, error code: ${res.statusCode} - ${res.statusMessage}`)
-            }
-
-            throw new Error ('Error creating new user: ' + err);
-        } */
-    };
-
+                res.status(500).send().json({ result: "error", error: err });
+            });
+        } catch(err){
+            throw err;
+        }
+    }
     async modifyUser(req: express.Request, res: express.Response){
 
     };

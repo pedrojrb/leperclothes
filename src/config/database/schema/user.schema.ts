@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose, { Schema, mongo } from "mongoose";
 import { CBaseSchema } from "./schema";
 import { validate } from "class-validator";
 import { validateEmail, validatePassword, validateUsername } from "../middleware/users.validations";
@@ -58,7 +58,9 @@ export class CUserSchema extends CBaseSchema implements IUser{
     
 }
 
-export const userSchema = new CUserSchema({
+export let userSchema: CUserSchema;
+
+let user = new CUserSchema({
     username:{
         type: "String",
         required: true,
@@ -89,3 +91,5 @@ export const userSchema = new CUserSchema({
         default: false
     }
 });
+
+userSchema = user;
