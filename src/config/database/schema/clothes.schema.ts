@@ -1,7 +1,9 @@
-import { validate } from "class-validator";
 import { CBaseSchema } from "./schema";
 import mongoose, { mongo } from 'mongoose';
 import { validateColor, validateName, validatePrice, validateSize } from "../middleware/clothes.validations";
+
+
+//-----------------------------DATA TYPES DECLARATION-----------------------------------
 
 export enum TSizeClothes {'S','M','L' ,'XL','XXL','XXXL'};
 
@@ -18,6 +20,13 @@ interface IClothes {
     price: object,
     created_at: object
 }
+
+//-----------------------VARIABLE DECLARATION------------------------
+
+export let clothesSchema: CTshirtSchema;
+let tshirt: CTshirtSchema;
+
+
 export class CTshirtSchema extends CBaseSchema implements IClothes{
 
     name: object;
@@ -49,32 +58,9 @@ export class CTshirtSchema extends CBaseSchema implements IClothes{
         }
     }
 
-
-    /* protected validateName(name: string): void {
-        try{
-            if(!name) throw new Error('Name is required');
-
-            if(name.length > 100) throw new Error('Name must be at least 100 characters long');
-
-        } catch (error) {
-            throw new Error('Error while validating name:' + error);
-        }
-    }
-
-    protected validatePrice(price: number): void {
-        try{
-            if(!price) throw new Error('Price is required');
-
-            if(price < 0) throw new Error('Price dont be negative value');
-
-        } catch (error) {
-            throw new Error('Error while validating price: ' + error);
-        }
-    } */
 }
 
-
-export const clothesSchema = new CTshirtSchema({
+tshirt = new CTshirtSchema({
     name:{
         type: "String",
         unique: [true, 'Name is required'],
@@ -98,3 +84,5 @@ export const clothesSchema = new CTshirtSchema({
         default: new Date()
     }
 });
+
+clothesSchema = tshirt;

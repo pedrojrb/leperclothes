@@ -60,7 +60,7 @@ export class UserController{
             throw err;
         }
     }
-    async modifyUser(req: express.Request, res: express.Response){
+        async modifyUser(req: express.Request, res: express.Response){
 
     };
 

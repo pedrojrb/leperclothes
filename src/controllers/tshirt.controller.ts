@@ -17,8 +17,9 @@ export class CtshirtController{
 
     createTshirt(req: express.Request, res: express.Response){
 
-       /*  try{
-            let tshirt: mongoose.Model<CTshirtSchema>, document:  mongoose.Document<CTshirtSchema | CTshirtModel | object>;
+        try{
+            let tshirt;
+            let document: mongoose.Document<CTshirtModel | CTshirtSchema | object>;
             
             const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
 
@@ -58,10 +59,10 @@ export class CtshirtController{
             });
             
 
-        } catch (e){
-            throw Error('Error creating model: ' + e)
-        } */
+        } catch (err){
+            res.status(500).send().json({ result: "error", error: err});
         }
+    }
         
         
             /* .then(response => {

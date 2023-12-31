@@ -15,7 +15,7 @@ class CTshirtModel extends model_1.CBaseModel {
     }
     createModel() {
         try {
-            return mongoose_1.default.model('tshirt', new mongoose_1.default.Schema(clothes_schema_1.clothesSchema));
+            return mongoose_1.default.models.tshirt || mongoose_1.default.model('tshirt', new mongoose_1.default.Schema(clothes_schema_1.clothesSchema));
         }
         catch (err) {
             throw new Error('Error creating model: ' + err);

@@ -1,9 +1,8 @@
-import { databaseConnection, disconnectDatabase } from '../db.config';
+
 import { CBaseSchema } from '../schema/schema';
 import { CBaseModel } from './model';
-import mongoose, { Model, Schema } from 'mongoose';
-import * as express from 'express';
-import { CUserSchema, userSchema } from '../schema/user.schema';
+import mongoose, { Model} from 'mongoose';
+import { userSchema } from '../schema/user.schema';
 
 export class CUserModel extends CBaseModel {
 

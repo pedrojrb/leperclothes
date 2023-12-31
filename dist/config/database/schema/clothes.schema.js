@@ -40,7 +40,7 @@ class CTshirtSchema extends schema_1.CBaseSchema {
     }
 }
 exports.CTshirtSchema = CTshirtSchema;
-exports.clothesSchema = new CTshirtSchema({
+const tshirt = new CTshirtSchema({
     name: {
         type: "String",
         unique: [true, 'Name is required'],
@@ -64,3 +64,4 @@ exports.clothesSchema = new CTshirtSchema({
         default: new Date()
     }
 });
+exports.clothesSchema = tshirt;

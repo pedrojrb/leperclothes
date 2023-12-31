@@ -1,16 +1,6 @@
-import mongoose, { Schema, mongo } from "mongoose";
+import mongoose from "mongoose";
 import { CBaseSchema } from "./schema";
-import { validate } from "class-validator";
 import { validateEmail, validatePassword, validateUsername } from "../middleware/users.validations";
-
-/* User Schema:
-
-username: String (required)
-email: String (required)
-password: String (required)
-deleted: Boolean (default: false)
-created_at: Date (default: current date and time)
- */
 
 interface IUser {
     username: object,
@@ -42,7 +32,6 @@ export class CUserSchema extends CBaseSchema implements IUser{
 
     public createSchema(schema: CUserSchema): void {
         try{
-            this.validateSchema(schema);
 
             let userSchema = new mongoose.Schema(schema);
 

@@ -18,7 +18,7 @@ export class CTshirtModel extends CBaseModel {
 
     createModel() {
         try{
-            return mongoose.model('tshirt',new mongoose.Schema(clothesSchema));
+            return mongoose.models.tshirt || mongoose.model('tshirt',new mongoose.Schema(clothesSchema));
         
         } catch(err){
             throw new Error('Error creating model: '+ err);
