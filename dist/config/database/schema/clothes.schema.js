@@ -3,10 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clothesSchema = exports.CTshirtSchema = exports.TSizeClothes = void 0;
+exports.CTshirtSchema = exports.clothesSchema = exports.TSizeClothes = void 0;
 const schema_1 = require("./schema");
 const mongoose_1 = __importDefault(require("mongoose"));
 const clothes_validations_1 = require("../middleware/clothes.validations");
+//-----------------------------DATA TYPES DECLARATION-----------------------------------
 var TSizeClothes;
 (function (TSizeClothes) {
     TSizeClothes[TSizeClothes["S"] = 0] = "S";
@@ -17,6 +18,7 @@ var TSizeClothes;
     TSizeClothes[TSizeClothes["XXXL"] = 5] = "XXXL";
 })(TSizeClothes || (exports.TSizeClothes = TSizeClothes = {}));
 ;
+let tshirt;
 class CTshirtSchema extends schema_1.CBaseSchema {
     constructor(clothes) {
         super();
@@ -40,7 +42,7 @@ class CTshirtSchema extends schema_1.CBaseSchema {
     }
 }
 exports.CTshirtSchema = CTshirtSchema;
-const tshirt = new CTshirtSchema({
+tshirt = new CTshirtSchema({
     name: {
         type: "String",
         unique: [true, 'Name is required'],

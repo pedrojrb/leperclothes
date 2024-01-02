@@ -20,7 +20,6 @@ class CUserSchema extends schema_1.CBaseSchema {
     }
     createSchema(schema) {
         try {
-            this.validateSchema(schema);
             let userSchema = new mongoose_1.default.Schema(schema);
             if (userSchema instanceof mongoose_1.default.Schema) {
                 console.log(`Schema of user created successfully`);

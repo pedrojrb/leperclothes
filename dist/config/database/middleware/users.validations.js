@@ -1,11 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validatePassword = exports.validateEmail = exports.validateUsername = void 0;
+const cryptr_1 = __importDefault(require("cryptr"));
 /**
  * This function is responsible for validating data before sending to the database.
  * @param Reference of the tshirt schema
  * return the next middleware function.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatePassword = exports.validateEmail = exports.validateUsername = void 0;
 function validateUsername(username) {
     let regex = new RegExp('^[a-z0-9]+$');
     try {
@@ -39,7 +43,9 @@ function validateEmail(email) {
 exports.validateEmail = validateEmail;
 function validatePassword(password) {
     const regex = new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d)("#/@$!%*?&+}{]{8,10}$`);
+    const cryptr = new cryptr_1.default('Password');
     try {
+        password = cryptr.decrypt(password);
         if (!password)
             throw new Error('Please enter a password');
         if (password.length < 7)

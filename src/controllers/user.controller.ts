@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { CUserSchema, userSchema } from '../config/database/schema/user.schema';
 import { CUserModel } from "../config/database/models/users.model";
 import { databaseConnection } from "../config/database/db.config";
+import cryptr from 'cryptr';
+import Cryptr from "cryptr";
 
 export class UserController{
 
@@ -18,6 +20,9 @@ export class UserController{
 
    async createUser(req: express.Request, res: express.Response){
         try{
+            let cryptr = new Cryptr('Password');
+
+            req.body.password = cryptr.encrypt(req.body.password);
             let user ;
             let document:  mongoose.Document<CUserSchema | CUserModel | object>;
             

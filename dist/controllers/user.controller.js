@@ -17,6 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const user_schema_1 = require("../config/database/schema/user.schema");
 const users_model_1 = require("../config/database/models/users.model");
 const db_config_1 = require("../config/database/db.config");
+const cryptr_1 = __importDefault(require("cryptr"));
 class UserController {
     getAllUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +32,8 @@ class UserController {
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                let cryptr = new cryptr_1.default('Password');
+                req.body.password = cryptr.encrypt(req.body.password);
                 let user;
                 let document;
                 const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);

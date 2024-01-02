@@ -1,3 +1,5 @@
+import Cryptr from "cryptr";
+
 
 /**
  * This function is responsible for validating data before sending to the database.
@@ -44,9 +46,11 @@ export function validateEmail(email: string): boolean {
 export function validatePassword(password: string): boolean {
 
     const regex: Readonly<RegExp> = new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d)("#/@$!%*?&+}{]{8,10}$`);
-    
+    const cryptr: Cryptr = new Cryptr('Password');
     try {
         
+        password = cryptr.decrypt(password);
+
         if(!password) throw new Error('Please enter a password');
 
         if(password.length < 7) throw new Error('Password minimum length is 8');
