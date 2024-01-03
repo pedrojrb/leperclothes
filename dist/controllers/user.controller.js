@@ -18,6 +18,7 @@ const user_schema_1 = require("../config/database/schema/user.schema");
 const users_model_1 = require("../config/database/models/users.model");
 const db_config_1 = require("../config/database/db.config");
 const cryptr_1 = __importDefault(require("cryptr"));
+const emailSenderService_1 = require("../service/emailSenderService");
 class UserController {
     getAllUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,9 +34,11 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let cryptr = new cryptr_1.default('Password');
-                req.body.password = cryptr.encrypt(req.body.password);
                 let user;
                 let document;
+                let userValid = false;
+                let email;
+                req.body.password = cryptr.encrypt(req.body.password);
                 const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
                 user = userModel.createModel();
                 document = new user(req.body);
@@ -48,7 +51,15 @@ class UserController {
                                 .then((result) => {
                                 if (result) {
                                     console.log('User saved', result);
-                                    return res.status(201).json({ "result": "ok", "response": result });
+                                    userValid = true;
+                                    if (userValid) {
+                                        console.log('userValid:' + userValid);
+                                        email = new emailSenderService_1.Email('delivered@resend.dev', ['ruizbaleanipedro@gmail.com']);
+                                        email.sendEmail(email)
+                                            .then(email => console.log(email))
+                                            .catch(err => { return res.status(500).send().json({ result: "error", error: err }); });
+                                    }
+                                    res.status(201).json({ "result": "ok", "response": result });
                                 }
                             })
                                 .catch(err => {

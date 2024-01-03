@@ -5,6 +5,7 @@ import { CUserModel } from "../config/database/models/users.model";
 import { databaseConnection } from "../config/database/db.config";
 import cryptr from 'cryptr';
 import Cryptr from "cryptr";
+import { Email } from "../service/emailSenderService";
 
 export class UserController{
 
@@ -21,10 +22,13 @@ export class UserController{
    async createUser(req: express.Request, res: express.Response){
         try{
             let cryptr = new Cryptr('Password');
-
-            req.body.password = cryptr.encrypt(req.body.password);
             let user ;
             let document:  mongoose.Document<CUserSchema | CUserModel | object>;
+            let userValid: boolean = false;
+            let email: Email;
+
+            req.body.password = cryptr.encrypt(req.body.password);
+            
             
             const userModel = new CUserModel('user', userSchema);
 
@@ -45,9 +49,17 @@ export class UserController{
                         .then((result) =>{
                             if(result){
                                 console.log('User saved', result);
-                                
-                                return res.status(201).json({"result":"ok", "response": result});
+                                userValid = true;
 
+                                if(userValid){
+                                    console.log('userValid:' +  userValid);
+                                    email = new Email('delivered@resend.dev',['ruizbaleanipedro@gmail.com']);
+                                    email.sendEmail(email)
+                                    .then(email => console.log(email))
+                                    .catch(err => {return res.status(500).send().json({ result: "error", error: err})});
+                                }
+
+                                res.status(201).json({"result":"ok", "response": result});
                             }
                         })
                         .catch(err => {
@@ -61,6 +73,9 @@ export class UserController{
             .catch(err => {
                 res.status(500).send().json({ result: "error", error: err });
             });
+
+            
+
         } catch(err){
             throw err;
         }

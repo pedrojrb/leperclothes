@@ -12,29 +12,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Email = void 0;
 const resend_1 = require("resend");
 const dotenv_1 = __importDefault(require("dotenv"));
+const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 dotenv_1.default.config();
-let resend;
-function createKey(key) {
-    if (key)
-        resend = new resend_1.Resend(key);
-    throw new Error('Invalid API key');
-}
 class Email {
-    constructor(from, to, subject, html) {
+    constructor(from, to) {
+        this.subject = 'Confirmation code - EleperClothes';
+        this.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)();
         this.from = from;
         this.to = to;
-        this.subject = subject;
-        this.html = html;
-        createKey(process.env.API_RESEND_KEY);
+        this.key = process.env.API_RESEND_KEY ? process.env.API_RESEND_KEY : undefined;
     }
     sendEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
+            let resend = createKey(this.key);
             let retry = 0;
             try {
                 while (retry < 3) {
-                    return yield resend.emails.send(email);
+                    if (resend) {
+                        return yield resend.emails.send({ from: email.from, to: email.to, subject: email.subject, html: email.html, headers: { Authorization: `Bearer ${this.key}` } });
+                    }
                 }
             }
             catch (e) {
@@ -43,4 +42,15 @@ class Email {
             }
         });
     }
+}
+exports.Email = Email;
+function createKey(key) {
+    if (key) {
+        const resend = new resend_1.Resend(key);
+        if (resend) {
+            return resend;
+        }
+    }
+    ;
+    throw new Error('Invalid API key');
 }
