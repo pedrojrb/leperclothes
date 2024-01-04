@@ -19,6 +19,8 @@ const users_model_1 = require("../config/database/models/users.model");
 const db_config_1 = require("../config/database/db.config");
 const cryptr_1 = __importDefault(require("cryptr"));
 const emailSenderService_1 = require("../service/emailSenderService");
+const generateToken_1 = require("../config/database/middleware/generateToken");
+const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 class UserController {
     getAllUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,33 +35,50 @@ class UserController {
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                //initialize all variables used in the request
+                let token;
                 let cryptr = new cryptr_1.default('Password');
                 let user;
                 let document;
                 let userValid = false;
                 let email;
-                req.body.password = cryptr.encrypt(req.body.password);
                 const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+                //encrypt password before save in database
+                req.body.password = cryptr.encrypt(req.body.password);
+                //create model and documents for save in database
                 user = userModel.createModel();
                 document = new user(req.body);
+                //connect to database
                 (0, db_config_1.databaseConnection)()
                     .then(conn => {
                     if (conn) {
                         console.log("Connection established to database: " + conn);
                         if (document && document instanceof mongoose_1.default.Model) {
+                            //save the document
                             document.save()
                                 .then((result) => {
                                 if (result) {
                                     console.log('User saved', result);
                                     userValid = true;
+                                    //send confirmation email
                                     if (userValid) {
-                                        console.log('userValid:' + userValid);
-                                        email = new emailSenderService_1.Email('delivered@resend.dev', ['ruizbaleanipedro@gmail.com']);
+                                        email = new emailSenderService_1.Email('delivered@resend.dev', [req.body.email], (0, emailservice_middelwares_1.getRandomCode)());
                                         email.sendEmail(email)
-                                            .then(email => console.log(email))
+                                            .then(email => {
+                                            console.log(`Email send ${email} successfully`);
+                                        })
                                             .catch(err => { return res.status(500).send().json({ result: "error", error: err }); });
+                                        if (email) {
+                                            token = (0, generateToken_1.createToken)({
+                                                "email": email.from,
+                                                "code": email.code
+                                            });
+                                        }
+                                        res
+                                            .status(201)
+                                            .send({ email: email.to[0], code: email.code, token: token })
+                                            .redirect(`/user/verify/token=${token}`);
                                     }
-                                    res.status(201).json({ "result": "ok", "response": result });
                                 }
                             })
                                 .catch(err => {
@@ -87,6 +106,10 @@ class UserController {
         });
     }
     ;
+    verifyUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
 }
 exports.UserController = UserController;
 ;

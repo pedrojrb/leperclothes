@@ -8,7 +8,8 @@ function getRandomCode(min = 11111, max = 99999) {
 }
 exports.getRandomCode = getRandomCode;
 function getHTMLformattedForEmail() {
-    let html = `<h1>Confirmation code - Eleper Clothes</h1> <br> <p>Insert code: ${getRandomCode()}</p> <br> <button>Go to link</button>`;
+    let randomCode = getRandomCode();
+    let html = `<h1>Confirmation code - Eleper Clothes</h1> <br> <p>Insert code: ${randomCode}</p>`;
     return html;
 }
 exports.getHTMLformattedForEmail = getHTMLformattedForEmail;

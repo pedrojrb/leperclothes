@@ -18,11 +18,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 dotenv_1.default.config();
 class Email {
-    constructor(from, to) {
+    constructor(from, to, code) {
         this.subject = 'Confirmation code - EleperClothes';
         this.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)();
         this.from = from;
         this.to = to;
+        this.code = code;
         this.key = process.env.API_RESEND_KEY ? process.env.API_RESEND_KEY : undefined;
     }
     sendEmail(email) {
