@@ -19,8 +19,7 @@ const users_model_1 = require("../config/database/models/users.model");
 const db_config_1 = require("../config/database/db.config");
 const cryptr_1 = __importDefault(require("cryptr"));
 const emailSenderService_1 = require("../service/emailSenderService");
-const generateToken_1 = require("../config/database/middleware/generateToken");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const token_1 = require("../config/database/middleware/token");
 const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 class UserController {
     getAllUsers(req, res) {
@@ -64,7 +63,7 @@ class UserController {
                                     //send confirmation email
                                     if (userValid) {
                                         email = new emailSenderService_1.Email('delivered@resend.dev', [req.body.email]);
-                                        token = (0, generateToken_1.createToken)({
+                                        token = (0, token_1.createToken)({
                                             "email": email.to[0]
                                         });
                                         email.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)(token);
@@ -107,36 +106,37 @@ class UserController {
     verifyUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let email;
+            let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
             let token = req.params.token;
-            if (process.env.SECRET_TOKEN_KEY) {
-                jsonwebtoken_1.default.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
-                    if (err) {
-                        res.status(401).send().json({ result: "error", message: err.message });
+            let payload = (0, token_1.verifyToken)(token);
+            let document = model.createModel();
+            try {
+                //if verification token is present then search token data.
+                if (payload) {
+                    if (typeof payload === 'object' && payload['email']) {
+                        email = payload['email'];
+                        //connect to database
+                        (0, db_config_1.databaseConnection)()
+                            .then(connection => {
+                            if (connection) {
+                                //find in database if exists email address
+                                document.findOneAndUpdate({ email: email }, { verificated: true }).exec();
+                            }
+                        })
+                            .catch(error => {
+                            res.status(501).send().json({ result: "error", error: error });
+                            return;
+                        });
                     }
-                    if (data === null || data === void 0 ? void 0 : data.email) {
-                        email = data.email;
-                    }
-                });
+                    res.status(200).json({ result: "ok", message: payload });
+                    return;
+                }
             }
-            /* const token = req.headers.authorization?.split(' ')[1]
-            console.log(token); */
-            /* if(token && process.env.SECRET_TOKEN_KEY){
-                jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err,data) => {
-                    if(err){
-                        return  res.status(501).send().json({result: "error", message: err.message})
-                    }
-    
-                    if(data){
-    
-                        res.json({result: "success", message: data})
-                    }
-    
-                })
-    
-            } */
-            res.status(200).json({ result: "error", message: 'asd' });
+            catch (error) {
+                res.status(401).json({ result: "error", message: error });
+                return;
+            }
         });
     }
 }
 exports.UserController = UserController;
-;

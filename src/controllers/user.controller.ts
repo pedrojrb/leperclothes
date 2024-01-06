@@ -5,8 +5,8 @@ import { CUserModel } from "../config/database/models/users.model";
 import { databaseConnection } from "../config/database/db.config";
 import Cryptr from "cryptr";
 import { Email } from "../service/emailSenderService";
-import { createToken} from '../config/database/middleware/generateToken';
-import jwt from 'jsonwebtoken';
+import { createToken, verifyToken} from '../config/database/middleware/token';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { getHTMLformattedForEmail } from "../config/database/middleware/emailservice.middelwares";
 
 
@@ -27,7 +27,7 @@ export class UserController{
             //initialize all variables used in the request
             let token: string;
             let cryptr = new Cryptr('Password');
-            let user;
+            let user: mongoose.Model<CUserModel>;
             let document:  mongoose.Document<CUserSchema | CUserModel | object>;
             let userValid: boolean = false;
             let email: Email;
@@ -71,6 +71,7 @@ export class UserController{
                                     
                                     token = createToken({
                                         "email": email.to[0]
+                                        
                                     });
                              
                                     email.html = getHTMLformattedForEmail(token);
@@ -115,40 +116,55 @@ export class UserController{
 
     async verifyUser(req: express.Request, res: express.Response){
         let email: string;
+        let model = new CUserModel('user', userSchema);
         let token: string = req.params.token;
+        let payload: string | JwtPayload | undefined = verifyToken(token);
+        let document = model.createModel()
 
-        if(process.env.SECRET_TOKEN_KEY){
-            jwt.verify(token,process.env.SECRET_TOKEN_KEY,(err, data)=>{
-                if(err){
+        try{
 
-                    res.status(401).send().json({result: "error",message: err.message});
+            //if verification token is present then search token data.
+
+            if(payload){  
+    
+                if(typeof payload === 'object' && payload['email']){
+    
+                   
+                    email = payload['email'];
+                    //connect to database
+
+                    databaseConnection()
+                    .then(connection => {
+                        if(connection){       
+                            //find in database if exists email address
+                            document.findOneAndUpdate({email: email}, {verificated: true}).exec();
+
+
+    
+                        }
+                    })
+                    .catch(error => {
+                        res.status(501).send().json({result:"error", error: error})
+                        return;
+                    })
 
                 }
-                
-                if(data?.email){ email = data.email; }
-        
-            })
+    
+                res.status(200).json({result: "ok", message: payload}) 
+                return;
+            }
+
+
+        } catch (error){
+
+            res.status(401).json({result: "error", message: error});
+            return;
+
         }
+
        
-        /* const token = req.headers.authorization?.split(' ')[1]
-        console.log(token); */
-
-        /* if(token && process.env.SECRET_TOKEN_KEY){
-            jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err,data) => {
-                if(err){
-                    return  res.status(501).send().json({result: "error", message: err.message})
-                }
-
-                if(data){
-
-                    res.json({result: "success", message: data})
-                }
-
-            })
-
-        } */
-        res.status(200).json({result: "error", message: 'asd'})
-        
     }
-
-};
+       
+       
+        
+}

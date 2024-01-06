@@ -4,7 +4,7 @@ import cors from "cors";
 import { ServerConfiguration } from "./config/config";
 import { UserRouter } from "./routes/users.router";
 import { CtshirtRouter } from "./routes/tshirt.router";
-import { createToken } from "./config/database/middleware/generateToken";
+import { createToken } from "./config/database/middleware/token";
 
 /**
  * Class main for execute application.
