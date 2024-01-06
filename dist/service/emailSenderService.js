@@ -15,15 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Email = void 0;
 const resend_1 = require("resend");
 const dotenv_1 = __importDefault(require("dotenv"));
-const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 dotenv_1.default.config();
 class Email {
-    constructor(from, to, code) {
+    constructor(from, to) {
         this.subject = 'Confirmation code - EleperClothes';
-        this.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)();
+        this.html = '';
         this.from = from;
         this.to = to;
-        this.code = code;
         this.key = process.env.API_RESEND_KEY ? process.env.API_RESEND_KEY : undefined;
     }
     sendEmail(email) {

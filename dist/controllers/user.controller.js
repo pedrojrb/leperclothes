@@ -20,6 +20,7 @@ const db_config_1 = require("../config/database/db.config");
 const cryptr_1 = __importDefault(require("cryptr"));
 const emailSenderService_1 = require("../service/emailSenderService");
 const generateToken_1 = require("../config/database/middleware/generateToken");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 class UserController {
     getAllUsers(req, res) {
@@ -62,22 +63,19 @@ class UserController {
                                     userValid = true;
                                     //send confirmation email
                                     if (userValid) {
-                                        email = new emailSenderService_1.Email('delivered@resend.dev', [req.body.email], (0, emailservice_middelwares_1.getRandomCode)());
+                                        email = new emailSenderService_1.Email('delivered@resend.dev', [req.body.email]);
+                                        token = (0, generateToken_1.createToken)({
+                                            "email": email.to[0]
+                                        });
+                                        email.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)(token);
                                         email.sendEmail(email)
-                                            .then(email => {
-                                            console.log(`Email send ${email} successfully`);
+                                            .then(emailSender => {
+                                            console.log(`Email send ${emailSender} successfully`);
                                         })
                                             .catch(err => { return res.status(500).send().json({ result: "error", error: err }); });
-                                        if (email) {
-                                            token = (0, generateToken_1.createToken)({
-                                                "email": email.from,
-                                                "code": email.code
-                                            });
-                                        }
                                         res
-                                            .status(201)
-                                            .send({ email: email.to[0], code: email.code, token: token })
-                                            .redirect(`/user/verify/token=${token}`);
+                                            .redirect(`verify/${token}`);
+                                        return;
                                     }
                                 }
                             })
@@ -108,6 +106,35 @@ class UserController {
     ;
     verifyUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            let email;
+            let token = req.params.token;
+            if (process.env.SECRET_TOKEN_KEY) {
+                jsonwebtoken_1.default.verify(token, process.env.SECRET_TOKEN_KEY, (err, data) => {
+                    if (err) {
+                        res.status(401).send().json({ result: "error", message: err.message });
+                    }
+                    if (data === null || data === void 0 ? void 0 : data.email) {
+                        email = data.email;
+                    }
+                });
+            }
+            /* const token = req.headers.authorization?.split(' ')[1]
+            console.log(token); */
+            /* if(token && process.env.SECRET_TOKEN_KEY){
+                jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err,data) => {
+                    if(err){
+                        return  res.status(501).send().json({result: "error", message: err.message})
+                    }
+    
+                    if(data){
+    
+                        res.json({result: "success", message: data})
+                    }
+    
+                })
+    
+            } */
+            res.status(200).json({ result: "error", message: 'asd' });
         });
     }
 }

@@ -5,8 +5,10 @@ import { CUserModel } from "../config/database/models/users.model";
 import { databaseConnection } from "../config/database/db.config";
 import Cryptr from "cryptr";
 import { Email } from "../service/emailSenderService";
-import { createToken } from "../config/database/middleware/generateToken";
-import { getRandomCode } from "../config/database/middleware/emailservice.middelwares";
+import { createToken} from '../config/database/middleware/generateToken';
+import jwt from 'jsonwebtoken';
+import { getHTMLformattedForEmail } from "../config/database/middleware/emailservice.middelwares";
+
 
 export class UserController{
 
@@ -61,26 +63,27 @@ export class UserController{
 
                                 //send confirmation email
 
+                           
+
                                 if(userValid){
+
+                                    email = new Email('delivered@resend.dev',[req.body.email]);
                                     
-                                    email = new Email('delivered@resend.dev',[req.body.email], getRandomCode());
+                                    token = createToken({
+                                        "email": email.to[0]
+                                    });
+                             
+                                    email.html = getHTMLformattedForEmail(token);
+                                    
                                     email.sendEmail(email)
-                                    .then(email => {
-                                        console.log(`Email send ${email} successfully`)
+                                    .then(emailSender => {
+                                        console.log(`Email send ${emailSender} successfully`);
                                     })
                                     .catch(err => {return res.status(500).send().json({ result: "error", error: err})});
-                                
-                                    if(email){
-                                        
-                                        token = createToken({
-                                            "email": email.from,
-                                            "code":email.code})
-                                        }
-
-                                        res
-                                        .status(201)
-                                        .send({email: email.to[0], code: email.code, token: token})
-                                        .redirect(`/user/verify/token=${token}`);
+                                    
+                                    res
+                                    .redirect(`verify/${token}`)
+                                    return;
                                 
                                 }
 
@@ -111,7 +114,41 @@ export class UserController{
     };
 
     async verifyUser(req: express.Request, res: express.Response){
+        let email: string;
+        let token: string = req.params.token;
 
+        if(process.env.SECRET_TOKEN_KEY){
+            jwt.verify(token,process.env.SECRET_TOKEN_KEY,(err, data)=>{
+                if(err){
+
+                    res.status(401).send().json({result: "error",message: err.message});
+
+                }
+                
+                if(data?.email){ email = data.email; }
+        
+            })
+        }
+       
+        /* const token = req.headers.authorization?.split(' ')[1]
+        console.log(token); */
+
+        /* if(token && process.env.SECRET_TOKEN_KEY){
+            jwt.verify(token, process.env.SECRET_TOKEN_KEY, (err,data) => {
+                if(err){
+                    return  res.status(501).send().json({result: "error", message: err.message})
+                }
+
+                if(data){
+
+                    res.json({result: "success", message: data})
+                }
+
+            })
+
+        } */
+        res.status(200).json({result: "error", message: 'asd'})
+        
     }
 
 };

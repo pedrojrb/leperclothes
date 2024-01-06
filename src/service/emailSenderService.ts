@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 import dotenv from 'dotenv';
-import { getHTMLformattedForEmail, getRandomCode } from '../config/database/middleware/emailservice.middelwares';
+import { getHTMLformattedForEmail } from '../config/database/middleware/emailservice.middelwares';
 
 
 
@@ -13,22 +13,19 @@ interface IEmail {
     subject: string,
     html: string,
     key: string | undefined,
-    code: number
 }
 
 export class Email implements IEmail {
     from: string;
     to: Array<string>;
     subject: string = 'Confirmation code - EleperClothes'; 
-    html: string = getHTMLformattedForEmail();
+    html: string = '';
     key: string | undefined;
-    code: number;
 
 
-    constructor( from: string, to: Array<string>, code: number) {
+    constructor( from: string, to: Array<string>) {
         this.from = from;
         this.to = to;
-        this.code = code;
         this.key = process.env.API_RESEND_KEY ? process.env.API_RESEND_KEY : undefined;
        
     }
