@@ -7,9 +7,46 @@ import { CTshirtModel } from "../config/database/models/tshirt.model";
 export class CtshirtController{
 
     async getAllTshirts(req: express.Request, res: express.Response){
-        
-    };
+        let model = new CTshirtModel('tshirt', clothesSchema)
+        let document = model.createModel();
+        if(req.method === 'GET'){
 
+            try{
+
+                databaseConnection()
+                .then(connection => {
+
+                    if(connection){
+        
+                        document.find()
+                        .then(result => {
+                            if(result){
+
+                                res.status(200).send().json({"result":"ok", "data":result})
+                                return;
+                            }
+                        })
+                        .catch(err => {
+                            res.status(500).send().json({"result":"error", "error":err})
+                            return;
+                        })
+        
+                    }
+                
+                
+                })
+                .catch(error => { 
+                res.status(401).send().json({ result:"error", error: error})
+                return; 
+                })
+            
+            } catch (err) {
+                res.status(401).send().json({ result:"error", error: err })
+                return;
+            }
+
+        }
+    }
     async getTshirtByTshirtname(req: express.Request, res: express.Response){
         //TODO: Write req.params and use that value for filter when get data of database.
         //TODO: Create new connection to database and get tshirts data.

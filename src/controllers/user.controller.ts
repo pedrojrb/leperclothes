@@ -9,14 +9,12 @@ import { createToken, verifyToken} from '../config/database/middleware/token';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { getHTMLformattedForEmail, getRandomCode } from "../config/database/middleware/emailservice.middelwares";
 import cors from 'cors';
+import { CTshirtModel } from "../config/database/models/tshirt.model";
 
 
 export class UserController{
 
-    async getAllUsers(req: express.Request, res: express.Response){
-        
-
-    };
+    async getAllUsers(req: express.Request, res: express.Response){};
 
     async getUserByUsername(req: express.Request, res: express.Response){
 

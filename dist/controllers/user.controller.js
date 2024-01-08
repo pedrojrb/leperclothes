@@ -23,8 +23,7 @@ const token_1 = require("../config/database/middleware/token");
 const emailservice_middelwares_1 = require("../config/database/middleware/emailservice.middelwares");
 class UserController {
     getAllUsers(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     ;
     getUserByUsername(req, res) {
