@@ -1,5 +1,5 @@
 import * as express from "express";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 import { CUserSchema, userSchema } from '../config/database/schema/user.schema';
 import { CUserModel } from "../config/database/models/users.model";
 import { databaseConnection } from "../config/database/db.config";
@@ -7,7 +7,8 @@ import Cryptr from "cryptr";
 import { Email } from "../service/emailSenderService";
 import { createToken, verifyToken} from '../config/database/middleware/token';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { getHTMLformattedForEmail } from "../config/database/middleware/emailservice.middelwares";
+import { getHTMLformattedForEmail, getRandomCode } from "../config/database/middleware/emailservice.middelwares";
+import cors from 'cors';
 
 
 export class UserController{
@@ -25,6 +26,7 @@ export class UserController{
    async createUser(req: express.Request, res: express.Response){
         try{
             //initialize all variables used in the request
+            let code: number = getRandomCode();
             let token: string;
             let cryptr = new Cryptr('Password');
             let user: mongoose.Model<CUserModel>;
@@ -63,18 +65,17 @@ export class UserController{
 
                                 //send confirmation email
 
-                           
-
                                 if(userValid){
 
                                     email = new Email('delivered@resend.dev',[req.body.email]);
                                     
                                     token = createToken({
-                                        "email": email.to[0]
+                                        "email": email.to[0],
+                                        "code": code
                                         
                                     });
                              
-                                    email.html = getHTMLformattedForEmail(token);
+                                    email.html = getHTMLformattedForEmail(token, code);
                                     
                                     email.sendEmail(email)
                                     .then(emailSender => {
@@ -117,6 +118,7 @@ export class UserController{
     async verifyUser(req: express.Request, res: express.Response){
         let email: string;
         let model = new CUserModel('user', userSchema);
+        let code: number;
         let token: string = req.params.token;
         let payload: string | JwtPayload | undefined = verifyToken(token);
         let document = model.createModel()
@@ -124,37 +126,64 @@ export class UserController{
         try{
 
             //if verification token is present then search token data.
-
+            
             if(payload){  
-    
+                
+                //Verify if email is present in payload.
+
                 if(typeof payload === 'object' && payload['email']){
     
                    
                     email = payload['email'];
-                    //connect to database
+                   
+                    //Only connect to database if request is POST.
 
-                    databaseConnection()
-                    .then(connection => {
-                        if(connection){       
-                            //find in database if exists email address
-                            document.findOneAndUpdate({email: email}, {verificated: true}).exec();
+                    if(req.method === 'POST'){
+                        
+                        //connection to database
 
+                        databaseConnection()
+                        .then(connection => {
+                             if(connection){ 
 
-    
-                        }
-                    })
-                    .catch(error => {
-                        res.status(501).send().json({result:"error", error: error})
-                        return;
-                    })
+                                if(typeof payload === 'object' && payload['code']){
 
+                                    code = payload['code'];
+
+                                    if(req.body.code === code){
+
+                                        //find in database if exists email address and update value of verification
+
+                                        document.findOneAndUpdate({email: email}, {verificated: true}).exec();
+
+                                        res.status(201).send().json({result: "ok", "data": "User verified successfully"});
+                                        return;
+                                    }
+
+                                    res.status(401.).send().json({result: "error", "data": "Invalid code"});
+                                    return;
+                                }
+
+                                
+                            }
+                         
+                             
+                         })
+                         .catch(error => {
+                             res.status(501).send().json({result:"error", error: error})
+                             return;
+                             
+                             })
+                         }
+                    }
+                  
+                    res.status(401).send().json({result: "ok", "data": "Expired token"})
+                    return;
                 }
     
                 res.status(200).json({result: "ok", message: payload}) 
                 return;
-            }
-
-
+        
         } catch (error){
 
             res.status(401).json({result: "error", message: error});
@@ -163,8 +192,6 @@ export class UserController{
         }
 
        
-    }
-       
-       
+    }     
         
 }

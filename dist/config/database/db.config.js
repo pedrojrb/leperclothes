@@ -21,7 +21,7 @@ function databaseConnection() {
             while (retry < 3) {
                 try {
                     if (process.env.DB_URI) {
-                        return yield mongoose_1.default.connect(process.env.DB_URI || '', {
+                        return yield mongoose_1.default.connect(process.env.DB_URI, {
                             connectTimeoutMS: 1000,
                             socketTimeoutMS: 1000
                         });
@@ -29,7 +29,6 @@ function databaseConnection() {
                 }
                 catch (error) {
                     retry++;
-                    console.log(error);
                 }
             }
         }

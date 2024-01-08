@@ -36,6 +36,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 //initialize all variables used in the request
+                let code = (0, emailservice_middelwares_1.getRandomCode)();
                 let token;
                 let cryptr = new cryptr_1.default('Password');
                 let user;
@@ -64,9 +65,10 @@ class UserController {
                                     if (userValid) {
                                         email = new emailSenderService_1.Email('delivered@resend.dev', [req.body.email]);
                                         token = (0, token_1.createToken)({
-                                            "email": email.to[0]
+                                            "email": email.to[0],
+                                            "code": code
                                         });
-                                        email.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)(token);
+                                        email.html = (0, emailservice_middelwares_1.getHTMLformattedForEmail)(token, code);
                                         email.sendEmail(email)
                                             .then(emailSender => {
                                             console.log(`Email send ${emailSender} successfully`);
@@ -107,30 +109,46 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             let email;
             let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+            let code;
             let token = req.params.token;
             let payload = (0, token_1.verifyToken)(token);
             let document = model.createModel();
             try {
                 //if verification token is present then search token data.
                 if (payload) {
+                    //Verify if email is present in payload.
                     if (typeof payload === 'object' && payload['email']) {
                         email = payload['email'];
-                        //connect to database
-                        (0, db_config_1.databaseConnection)()
-                            .then(connection => {
-                            if (connection) {
-                                //find in database if exists email address
-                                document.findOneAndUpdate({ email: email }, { verificated: true }).exec();
-                            }
-                        })
-                            .catch(error => {
-                            res.status(501).send().json({ result: "error", error: error });
-                            return;
-                        });
+                        //Only connect to database if request is POST.
+                        if (req.method === 'POST') {
+                            //connection to database
+                            (0, db_config_1.databaseConnection)()
+                                .then(connection => {
+                                if (connection) {
+                                    if (typeof payload === 'object' && payload['code']) {
+                                        code = payload['code'];
+                                        if (req.body.code === code) {
+                                            //find in database if exists email address and update value of verification
+                                            document.findOneAndUpdate({ email: email }, { verificated: true }).exec();
+                                            res.status(201).send().json({ result: "ok", "data": "User verified successfully" });
+                                            return;
+                                        }
+                                        res.status(401.).send().json({ result: "error", "data": "Invalid code" });
+                                        return;
+                                    }
+                                }
+                            })
+                                .catch(error => {
+                                res.status(501).send().json({ result: "error", error: error });
+                                return;
+                            });
+                        }
                     }
-                    res.status(200).json({ result: "ok", message: payload });
+                    res.status(401).send().json({ result: "ok", "data": "Expired token" });
                     return;
                 }
+                res.status(200).json({ result: "ok", message: payload });
+                return;
             }
             catch (error) {
                 res.status(401).json({ result: "error", message: error });

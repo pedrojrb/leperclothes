@@ -20,6 +20,7 @@ class UserRouter extends router_1.CRouter {
         this.router.post('/user/modify/:id', (req, res) => this.controller.modifyUser(req, res));
         this.router.post('/user/:id', (req, res) => this.controller.deleteUser(req, res));
         this.router.get('/user/verify/:token', (req, res) => this.controller.verifyUser(req, res));
+        this.router.post('/user/verify/:token', (req, res) => this.controller.verifyUser(req, res));
     }
 }
 exports.UserRouter = UserRouter;

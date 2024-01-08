@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'; 
+import mongoose, { mongo } from 'mongoose'; 
 
-export async function databaseConnection() {
+export async function databaseConnection(): Promise<mongoose.Mongoose | undefined> {
     let retry: number = 0;
     
     try {
@@ -9,7 +9,7 @@ export async function databaseConnection() {
             try {
                 if(process.env.DB_URI) {
                     
-                    return await mongoose.connect(process.env.DB_URI || '', {
+                    return await mongoose.connect(process.env.DB_URI, {
                             connectTimeoutMS: 1000,
                             socketTimeoutMS: 1000
                     });
@@ -17,7 +17,6 @@ export async function databaseConnection() {
                 }
             } catch (error) {
                 retry++;
-                console.log(error);
             }
         }
     } catch (error) {
