@@ -22,33 +22,32 @@ class CtshirtController {
         return __awaiter(this, void 0, void 0, function* () {
             let model = new tshirt_model_1.CTshirtModel('tshirt', clothes_schema_1.clothesSchema);
             let document = model.createModel();
-            if (req.method === 'GET') {
-                try {
-                    (0, db_config_1.databaseConnection)()
-                        .then(connection => {
-                        if (connection) {
-                            document.find()
-                                .then(result => {
-                                if (result) {
-                                    res.status(200).send().json({ "result": "ok", "data": result });
-                                    return;
-                                }
-                            })
-                                .catch(err => {
-                                res.status(500).send().json({ "result": "error", "error": err });
-                                return;
-                            });
-                        }
-                    })
-                        .catch(error => {
-                        res.status(401).send().json({ result: "error", error: error });
-                        return;
-                    });
-                }
-                catch (err) {
-                    res.status(401).send().json({ result: "error", error: err });
+            try {
+                //connect to database
+                (0, db_config_1.databaseConnection)()
+                    .then(connection => {
+                    //when the connection is established find all tshirts in database
+                    if (connection) {
+                        document.find().exec()
+                            .then(data => {
+                            res.status(200).json({ result: "ok", response: data });
+                            return;
+                        })
+                            .catch(error => {
+                            console.log(error);
+                            res.status(401).json({ result: "ok", error: error });
+                            return;
+                        });
+                    }
+                })
+                    .catch(error => {
+                    res.status(401).json({ result: "error", error: error });
                     return;
-                }
+                });
+            }
+            catch (err) {
+                res.status(401).json({ result: "error", error: err });
+                return;
             }
         });
     }

@@ -9,43 +9,39 @@ export class CtshirtController{
     async getAllTshirts(req: express.Request, res: express.Response){
         let model = new CTshirtModel('tshirt', clothesSchema)
         let document = model.createModel();
-        if(req.method === 'GET'){
 
             try{
+                
+                //connect to database
 
                 databaseConnection()
                 .then(connection => {
-
+                    //when the connection is established find all tshirts in database
                     if(connection){
-        
-                        document.find()
-                        .then(result => {
-                            if(result){
-
-                                res.status(200).send().json({"result":"ok", "data":result})
-                                return;
-                            }
-                        })
-                        .catch(err => {
-                            res.status(500).send().json({"result":"error", "error":err})
+                        
+                        document.find().exec()
+                        .then(data => {
+                            res.status(200).json({result: "ok", response: data});
                             return;
                         })
-        
+                        .catch(error => {
+                            console.log(error);
+                            res.status(401).json({result: "ok", error: error});
+                            return;
+                        });
                     }
                 
                 
                 })
                 .catch(error => { 
-                res.status(401).send().json({ result:"error", error: error})
+                res.status(401).json({ result:"error", error: error})
                 return; 
                 })
             
             } catch (err) {
-                res.status(401).send().json({ result:"error", error: err })
+                res.status(401).json({ result:"error", error: err })
                 return;
             }
-
-        }
     }
     async getTshirtByTshirtname(req: express.Request, res: express.Response){
         //TODO: Write req.params and use that value for filter when get data of database.
