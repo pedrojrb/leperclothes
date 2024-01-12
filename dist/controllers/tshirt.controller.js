@@ -59,24 +59,24 @@ class CtshirtController {
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {
                     //when the connection is established find all tshirts in database
-                    document.findById(new mongoose_1.default.Types.ObjectId(id)).exec()
+                    document.findById({ _id: new mongoose_1.default.Types.ObjectId(id) }).exec()
                         .then(data => {
                         res.status(200).json({ result: "ok", response: data });
                         return;
                     })
                         .catch(error => {
                         console.log(error);
-                        res.status(401).json({ result: "error", error: error });
+                        res.status(401).json({ result: "error", error: error.message });
                         return;
                     });
                 })
                     .catch(error => {
-                    res.status(401).json({ result: "error", error: error });
+                    res.status(401).json({ result: "error", error: error.message });
                     return;
                 });
             }
-            catch (err) {
-                res.status(401).json({ result: "error", error: err });
+            catch (error) {
+                res.status(401).json({ result: "error", error: error });
                 return;
             }
         });

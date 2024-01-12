@@ -40,38 +40,38 @@ export class CtshirtController{
     }
     
     async getTshirtById(req: express.Request, res: express.Response){
+        
         let model = new CTshirtModel('tshirt', clothesSchema)
         let document = model.createModel();
         const id = req.params.id;
 
-        try{
-                
+        try{     
                 //connect to database
 
                 databaseConnection()
                 .then(connection => {
                     //when the connection is established find all tshirts in database
-                        document.findById(new mongoose.Types.ObjectId(id)).exec()
+                        document.findById({_id: new mongoose.Types.ObjectId(id)}).exec()
                         .then(data => {
                             res.status(200).json({result: "ok", response: data});
                             return;
                         })
                         .catch(error => {
                             console.log(error);
-                            res.status(401).json({result: "error", error: error});
+                            res.status(401).json({result: "error", error: error.message});
                             return;
                         });
                 
                 
                 })
                 .catch(error => { 
-                res.status(401).json({ result:"error", error: error})
+                res.status(401).json({ result:"error", error: error.message})
                 return; 
                 })
             
-        } catch (err) {
-                res.status(401).json({ result:"error", error: err })
-                return;
+        } catch (error) {
+            res.status(401).json({ result:"error", error: error });
+            return;
         }
     };
     async getTshirtByName(req: express.Request, res: express.Response){
