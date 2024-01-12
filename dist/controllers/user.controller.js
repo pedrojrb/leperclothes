@@ -72,7 +72,10 @@ class UserController {
                                             .then(emailSender => {
                                             console.log(`Email send ${emailSender} successfully`);
                                         })
-                                            .catch(err => { return res.status(500).send().json({ result: "error", error: err }); });
+                                            .catch(err => {
+                                            res.status(500).json({ result: "error", error: err });
+                                            return;
+                                        });
                                         res
                                             .redirect(`verify/${token}`);
                                         return;
@@ -86,11 +89,13 @@ class UserController {
                     }
                 })
                     .catch(err => {
-                    res.status(500).send().json({ result: "error", error: err });
+                    res.status(500).json({ result: "error", error: err });
+                    return;
                 });
             }
             catch (err) {
-                throw err;
+                res.status(500).json({ result: "error", error: err });
+                return;
             }
         });
     }
@@ -107,50 +112,53 @@ class UserController {
     verifyUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             let email;
-            let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+            let model;
             let code;
             let token = req.params.token;
             let payload = (0, token_1.verifyToken)(token);
-            let document = model.createModel();
+            let document;
             try {
-                //if verification token is present then search token data.
-                if (payload) {
-                    //Verify if email is present in payload.
-                    if (typeof payload === 'object' && payload['email']) {
-                        email = payload['email'];
-                        //Only connect to database if request is POST.
-                        if (req.method === 'POST') {
-                            //connection to database
-                            (0, db_config_1.databaseConnection)()
-                                .then(connection => {
-                                if (connection) {
-                                    if (typeof payload === 'object' && payload['code']) {
-                                        code = payload['code'];
-                                        if (req.body.code === code) {
-                                            //find in database if exists email address and update value of verification
-                                            document.findOneAndUpdate({ email: email }, { verificated: true }).exec();
-                                            res.status(201).send().json({ result: "ok", "data": "User verified successfully" });
-                                            return;
-                                        }
-                                        res.status(401.).send().json({ result: "error", "data": "Invalid code" });
-                                        return;
-                                    }
-                                }
-                            })
-                                .catch(error => {
-                                res.status(501).send().json({ result: "error", error: error });
-                                return;
-                            });
-                        }
-                    }
-                    res.status(401).send().json({ result: "ok", "data": "Expired token" });
+                if (req.method === 'GET') {
+                    res.send({ result: 'ok', response: payload });
+                    res.end();
                     return;
                 }
-                res.status(200).json({ result: "ok", message: payload });
-                return;
+                if (req.method === 'POST') {
+                    model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+                    document = model.createModel();
+                    //Verify if email is present in payload.
+                    if (!payload)
+                        throw Error('Token is expired');
+                    if (typeof payload == 'object' && payload['email'] && payload['code']) {
+                        email = payload['email'];
+                        code = payload['code'];
+                        //connection to database
+                        (0, db_config_1.databaseConnection)()
+                            .then(connection => {
+                            if (req.body.code === code) {
+                                //find in database if exists email address and update value of verification
+                                let data = document.findOneAndUpdate({ email: email }, { verificated: true }, { new: true });
+                                data
+                                    .then((data) => {
+                                    res.send({ result: "ok", response: "User verified successfully" });
+                                    return;
+                                })
+                                    .catch((error) => {
+                                    res.status(400).send({ result: error, response: error });
+                                    return;
+                                });
+                            }
+                            throw Error('Invalid code');
+                        })
+                            .catch(error => {
+                            res.status(401).send({ result: "error", error: error.message });
+                            return;
+                        });
+                    }
+                }
             }
             catch (error) {
-                res.status(401).json({ result: "error", message: error });
+                res.json({ result: "error", message: error });
                 return;
             }
         });

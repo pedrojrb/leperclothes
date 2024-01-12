@@ -11,6 +11,7 @@ function createToken(arg) {
         throw new Error('token key is required');
     }
     token = jsonwebtoken_1.default.sign(arg, process.env.SECRET_TOKEN_KEY, { expiresIn: 900 });
+    console.log('createToken: ' + token);
     return token;
 }
 exports.createToken = createToken;

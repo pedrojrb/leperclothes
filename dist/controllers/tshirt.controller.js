@@ -27,18 +27,16 @@ class CtshirtController {
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {
                     //when the connection is established find all tshirts in database
-                    if (connection) {
-                        document.find().exec()
-                            .then(data => {
-                            res.status(200).json({ result: "ok", response: data });
-                            return;
-                        })
-                            .catch(error => {
-                            console.log(error);
-                            res.status(401).json({ result: "ok", error: error });
-                            return;
-                        });
-                    }
+                    document.find().exec()
+                        .then(data => {
+                        res.status(200).json({ result: "ok", response: data });
+                        return;
+                    })
+                        .catch(error => {
+                        console.log(error);
+                        res.status(401).json({ result: "ok", error: error });
+                        return;
+                    });
                 })
                     .catch(error => {
                     res.status(401).json({ result: "error", error: error });
@@ -51,10 +49,41 @@ class CtshirtController {
             }
         });
     }
-    getTshirtByTshirtname(req, res) {
+    getTshirtById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //TODO: Write req.params and use that value for filter when get data of database.
-            //TODO: Create new connection to database and get tshirts data.
+            let model = new tshirt_model_1.CTshirtModel('tshirt', clothes_schema_1.clothesSchema);
+            let document = model.createModel();
+            const id = req.params.id;
+            try {
+                //connect to database
+                (0, db_config_1.databaseConnection)()
+                    .then(connection => {
+                    //when the connection is established find all tshirts in database
+                    document.findById(new mongoose_1.default.Types.ObjectId(id)).exec()
+                        .then(data => {
+                        res.status(200).json({ result: "ok", response: data });
+                        return;
+                    })
+                        .catch(error => {
+                        console.log(error);
+                        res.status(401).json({ result: "error", error: error });
+                        return;
+                    });
+                })
+                    .catch(error => {
+                    res.status(401).json({ result: "error", error: error });
+                    return;
+                });
+            }
+            catch (err) {
+                res.status(401).json({ result: "error", error: err });
+                return;
+            }
+        });
+    }
+    ;
+    getTshirtByName(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
     ;
@@ -84,12 +113,12 @@ class CtshirtController {
                 }
             })
                 .catch(err => {
-                res.status(500).send().json({ result: "error", error: err });
+                res.status(500).json({ result: "error", error: err });
                 throw new Error('Error while connecting to database: ' + err);
             });
         }
         catch (err) {
-            res.status(500).send().json({ result: "error", error: err });
+            res.status(500).json({ result: "error", error: err });
         }
     }
     /* .then(response => {

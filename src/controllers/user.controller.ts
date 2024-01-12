@@ -71,15 +71,18 @@ export class UserController{
                                         "email": email.to[0],
                                         "code": code
                                         
-                                    });
-                             
+                                    })
+
                                     email.html = getHTMLformattedForEmail(token, code);
                                     
                                     email.sendEmail(email)
                                     .then(emailSender => {
                                         console.log(`Email send ${emailSender} successfully`);
                                     })
-                                    .catch(err => {return res.status(500).send().json({ result: "error", error: err})});
+                                    .catch(err => {
+                                        res.status(500).json({ result: "error", error: err})
+                                        return;
+                                    });
                                     
                                     res
                                     .redirect(`verify/${token}`)
@@ -98,11 +101,13 @@ export class UserController{
         
             })
             .catch(err => {
-                res.status(500).send().json({ result: "error", error: err });
+                res.status(500).json({ result: "error", error: err });
+                return;
             });
 
         } catch(err){
-            throw err;
+            res.status(500).json({ result: "error", error: err});
+            return;
         }
     }
         async modifyUser(req: express.Request, res: express.Response){
@@ -114,77 +119,77 @@ export class UserController{
     };
 
     async verifyUser(req: express.Request, res: express.Response){
+        
         let email: string;
-        let model = new CUserModel('user', userSchema);
+        let model: CUserModel;
         let code: number;
         let token: string = req.params.token;
         let payload: string | JwtPayload | undefined = verifyToken(token);
-        let document = model.createModel()
+        let document: mongoose.Model<CUserModel>;
+        
 
         try{
+           
+            if(req.method === 'GET'){
 
-            //if verification token is present then search token data.
+                res.send({result:'ok', response: payload});
+                res.end();
+                return;
+            }
+        
+            if(req.method === 'POST'){
+
+                model = new CUserModel('user', userSchema);
+                document = model.createModel();
             
-            if(payload){  
-                
                 //Verify if email is present in payload.
-
-                if(typeof payload === 'object' && payload['email']){
+                if(!payload) throw Error('Token is expired');
+                
+                if(typeof payload == 'object' && payload['email'] && payload['code']) {
     
                    
                     email = payload['email'];
-                   
-                    //Only connect to database if request is POST.
+                    code = payload['code'];
+                           
+                    //connection to database
 
-                    if(req.method === 'POST'){
-                        
-                        //connection to database
+                    databaseConnection()
+                    .then(connection => {
 
-                        databaseConnection()
-                        .then(connection => {
-                             if(connection){ 
+                        if(req.body.code === code){
 
-                                if(typeof payload === 'object' && payload['code']){
+                            //find in database if exists email address and update value of verification
 
-                                    code = payload['code'];
+                            let data = document.findOneAndUpdate({email: email}, {verificated: true}, {new: true});
+                            data
+                            .then((data) => {
+                                res.send({result: "ok", response: "User verified successfully"});
+                                return;
+                            })
+                            .catch((error) => {
+                                res.status(400).send({result: error, response: error});
+                                return;
+                            });
+                            
+                        }
 
-                                    if(req.body.code === code){
-
-                                        //find in database if exists email address and update value of verification
-
-                                        document.findOneAndUpdate({email: email}, {verificated: true}).exec();
-
-                                        res.status(201).send().json({result: "ok", "data": "User verified successfully"});
-                                        return;
-                                    }
-
-                                    res.status(401.).send().json({result: "error", "data": "Invalid code"});
-                                    return;
-                                }
-
-                                
-                            }
-                         
+                        throw Error('Invalid code');
                              
-                         })
-                         .catch(error => {
-                             res.status(501).send().json({result:"error", error: error})
-                             return;
+                    })
+                    .catch(error => {
+                            
+                        res.status(401).send({result: "error", error: error.message});
+                        return;
                              
-                             })
-                         }
-                    }
-                  
-                    res.status(401).send().json({result: "ok", "data": "Expired token"})
-                    return;
+                    });
+
+             
                 }
-    
-                res.status(200).json({result: "ok", message: payload}) 
-                return;
-        
+            }
+
         } catch (error){
 
-            res.status(401).json({result: "error", message: error});
+            res.json({result: "error", message: error});
             return;
 
         }
