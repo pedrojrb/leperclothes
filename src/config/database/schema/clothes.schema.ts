@@ -76,7 +76,7 @@ tshirt = new CTshirtSchema({
         validate: [validateColor, 'RGB value must be a number between 0 and 255']
     },
     price: {
-        type: "String",
+        type: "Decimal128",
         validate: [validatePrice, 'Price cannot be less than 0']
     },
     created_at: {

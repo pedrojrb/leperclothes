@@ -1,4 +1,4 @@
-import { TSizeClothes, TColorClothes } from '../schema/clothes.schema';
+import { TSizeClothes, TColorClothes, clothesSchema } from '../schema/clothes.schema';
 
 /**
  * This function is responsible for validating data before sending to the database.
@@ -24,4 +24,22 @@ export function validateColor(value: TColorClothes) {
 
 export function validatePrice(value: number): boolean {
     return value > 0;
+}
+
+export function allPropertiesAreValid(updated: object): boolean{
+
+    let originalsProperties: Array<string> = Object.keys(clothesSchema);
+    let newProperties = Object.keys(updated);
+
+    return newProperties.every(prop => originalsProperties.includes(prop));
+
+}
+
+export function propertiesInvalids(updated: object): Array<string> {
+
+    let originalsProperties: Array<string> = Object.keys(clothesSchema);
+    let newProperties = Object.keys(updated);
+
+    return newProperties.filter(prop => !originalsProperties.includes(prop));
+    
 }

@@ -17,6 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const clothes_schema_1 = require("../config/database/schema/clothes.schema");
 const db_config_1 = require("../config/database/db.config");
 const tshirt_model_1 = require("../config/database/models/tshirt.model");
+const clothes_validations_1 = require("../config/database/middleware/clothes.validations");
 class CtshirtController {
     getAllTshirts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -121,22 +122,44 @@ class CtshirtController {
             res.status(500).json({ result: "error", error: err });
         }
     }
-    /* .then(response => {
-        
-            res.status(201).json({"result": "ok", "data": response});
-    })
-    .catch(err => {
-        res.status(400).json({ result:"error",err: err})
-        throw new Error('Error durating creating model: ' + err)});
-    */
     modifyTshirt(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            try {
+                let tshirt;
+                let filter;
+                let update;
+                const tshirtModel = new tshirt_model_1.CTshirtModel('tshirt', clothes_schema_1.clothesSchema);
+                tshirt = tshirtModel.createModel();
+                filter = req.params.id;
+                update = req.body;
+                if (!(0, clothes_validations_1.allPropertiesAreValid)(update))
+                    throw new Error('Properties are not valid: ' + (0, clothes_validations_1.propertiesInvalids)(update));
+                (0, db_config_1.databaseConnection)()
+                    .then(connection => {
+                    //when the connection is established find all tshirts in database
+                    tshirt.findOneAndUpdate({ _id: new mongoose_1.default.Types.ObjectId(filter) }, update, { new: true }).exec()
+                        .then(data => {
+                        res.status(200).json({ result: "ok", response: data });
+                        return;
+                    })
+                        .catch(error => {
+                        res.status(401).json({ result: "error", error: error.message });
+                        return;
+                    });
+                })
+                    .catch(error => {
+                    res.status(401).json({ result: "error", error: error.message });
+                    return;
+                });
+            }
+            catch (error) {
+                res.status(401).json({ result: "error", error: error.message });
+                return;
+            }
         });
     }
-    ;
     deleteTshirt(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+        return __awaiter(this, void 0, void 0, function* () { });
     }
     ;
 }

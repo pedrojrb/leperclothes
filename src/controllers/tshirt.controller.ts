@@ -3,6 +3,7 @@ import mongoose, { isValidObjectId } from "mongoose";
 import { CTshirtSchema, clothesSchema } from '../config/database/schema/clothes.schema';
 import { databaseConnection, disconnectDatabase } from "../config/database/db.config";
 import { CTshirtModel } from "../config/database/models/tshirt.model";
+import { allPropertiesAreValid, propertiesInvalids } from '../config/database/middleware/clothes.validations';
 
 export class CtshirtController{
 
@@ -126,23 +127,49 @@ export class CtshirtController{
             res.status(500).json({ result: "error", error: err});
         }
     }
-        
-        
-            /* .then(response => {
-                
-                    res.status(201).json({"result": "ok", "data": response});                                
-            })
-            .catch(err => {
-                res.status(400).json({ result:"error",err: err})
-                throw new Error('Error durating creating model: ' + err)});
-            */
 
     async modifyTshirt(req: express.Request, res: express.Response){
+        try{
+            let tshirt: mongoose.Model<CTshirtModel | undefined>;
+            let filter: string;
+            let update: object;
+            const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
+            
+            tshirt = tshirtModel.createModel();
+            filter = req.params.id;
+            update = req.body;
 
-    };
+            if(!allPropertiesAreValid(update)) throw new Error('Properties are not valid: ' + propertiesInvalids(update));
+            
+            databaseConnection()
+            .then(connection => {
+                //when the connection is established find all tshirts in database
+                    tshirt.findOneAndUpdate({_id: new mongoose.Types.ObjectId(filter)}, update, { new: true }).exec()
+                    .then(data => {
+                        res.status(200).json({result: "ok", response: data});
+                        return;
+                    })
+                    .catch(error => {
+                        res.status(401).json({result: "error", error: error.message});
+                        return;
+                    });
+            
+            
+            })
+            .catch(error => { 
+            res.status(401).json({ result:"error", error: error.message});
+            return; 
+            });
 
-    async deleteTshirt(req: express.Request,res: express.Response){
 
-    };
+
+        } catch (error){        
+            res.status(401).json({result: "error", error: error.message});
+            return;
+        }
+
+    }
+
+    async deleteTshirt(req: express.Request,res: express.Response){};
 
 };
