@@ -20,6 +20,7 @@ class CtshirtRouter extends router_1.CRouter {
         this.router.post('/tshirts/modify/:id', (req, res) => this.controller.modifyTshirt(req, res));
         this.router.post('/tshirts/create', (req, res) => this.controller.createTshirt(req, res));
         this.router.post('/tshirts/:id', (req, res) => this.controller.deleteTshirt(req, res));
+        this.router.delete('/tshirts/search/:id', (req, res) => this.controller.deleteTshirt(req, res));
     }
 }
 exports.CtshirtRouter = CtshirtRouter;

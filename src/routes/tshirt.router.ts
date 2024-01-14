@@ -23,5 +23,6 @@ export class CtshirtRouter extends CRouter<CtshirtController>{
         this.router.post('/tshirts/modify/:id', (req: express.Request,res: express.Response) => this.controller.modifyTshirt(req,res));
         this.router.post('/tshirts/create', (req: express.Request,res: express.Response) => this.controller.createTshirt(req,res));
         this.router.post('/tshirts/:id', (req: express.Request,res: express.Response) => this.controller.deleteTshirt(req,res));
+        this.router.delete('/tshirts/search/:id', (req: express.Request, res: express.Response) => this.controller.deleteTshirt(req,res));
     }
 }

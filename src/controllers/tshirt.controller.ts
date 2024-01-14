@@ -163,13 +163,54 @@ export class CtshirtController{
 
 
 
-        } catch (error){        
+        } catch (error: any){
             res.status(401).json({result: "error", error: error.message});
             return;
         }
 
     }
 
-    async deleteTshirt(req: express.Request,res: express.Response){};
+    async deleteTshirt(req: express.Request,res: express.Response){
+        let tshirt: mongoose.Model<CTshirtModel | undefined>;
+        let filter: string;
+        const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
+
+        tshirt = tshirtModel.createModel();
+        filter = req.params.id;
+
+        try{
+             
+            databaseConnection()
+            .then(connection => {
+                //when the connection is established find all tshirts in database
+                    tshirt.deleteOne({_id: new mongoose.Types.ObjectId(filter)}, { new: true }).exec()
+                    .then(data => {
+                        if(data.deletedCount === 1){
+
+                            res.status(200).json({result: "ok", response: data});
+                            return;
+                        } else {
+                            res.status(200).json({result: "ok", response: `T-shirt has already been removed`, data: data});
+                            return;
+                        }
+                    })
+                    .catch(error => {
+                        res.status(401).json({result: "error", error: error.message});
+                        return;
+                    });
+            
+            
+            })
+            .catch(error => { 
+            res.status(401).json({ result:"error", error: error.message});
+            return; 
+            });
+        } catch (error: any){ 
+            if(Object.getOwnPropertyNames(error).includes("message")){
+                res.status(401).json({result: "error", error: error.message});
+                return;
+            }      
+        }
+    };
 
 };
