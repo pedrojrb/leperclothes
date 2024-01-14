@@ -85,6 +85,42 @@ class CtshirtController {
     ;
     getTshirtByName(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            let model = new tshirt_model_1.CTshirtModel('tshirt', clothes_schema_1.clothesSchema);
+            let document = model.createModel();
+            let filter;
+            const name = req.query.name;
+            if (typeof name === 'string') {
+                filter = new RegExp(name, 'gi');
+            }
+            try {
+                //connect to database
+                (0, db_config_1.databaseConnection)()
+                    .then(connection => {
+                    //when the connection is established find  tshirts match with filter in  database
+                    document.find({ name: filter }).exec()
+                        .then(data => {
+                        if (data.length === 0) {
+                            res.status(200).json({ result: "ok", response: data, comment: `There are no results that match the search: ${name}` });
+                            return;
+                        }
+                        res.status(200).json({ result: "ok", response: data });
+                        return;
+                    })
+                        .catch(error => {
+                        console.log(error);
+                        res.status(401).json({ result: "error", error: error.message });
+                        return;
+                    });
+                })
+                    .catch(error => {
+                    res.status(401).json({ result: "error", error: error.message });
+                    return;
+                });
+            }
+            catch (error) {
+                res.status(401).json({ result: "error", error: error });
+                return;
+            }
         });
     }
     ;
