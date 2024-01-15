@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatePassword = exports.validateEmail = exports.validateUsername = void 0;
+exports.isValidToUpdate = exports.validatePassword = exports.validateEmail = exports.validateUsername = void 0;
 const cryptr_1 = __importDefault(require("cryptr"));
 /**
  * This function is responsible for validating data before sending to the database.
@@ -61,3 +61,15 @@ function validatePassword(password) {
     }
 }
 exports.validatePassword = validatePassword;
+function isValidToUpdate(properties) {
+    console.log(properties);
+    let res = true;
+    let propDontUpdate = ["email", "created_at", "verificated"];
+    propDontUpdate.forEach(prop => {
+        if (properties.includes(prop)) {
+            res = false;
+        }
+    });
+    return res;
+}
+exports.isValidToUpdate = isValidToUpdate;

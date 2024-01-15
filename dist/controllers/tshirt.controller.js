@@ -17,7 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const clothes_schema_1 = require("../config/database/schema/clothes.schema");
 const db_config_1 = require("../config/database/db.config");
 const tshirt_model_1 = require("../config/database/models/tshirt.model");
-const clothes_validations_1 = require("../config/database/middleware/clothes.validations");
+const validations_1 = require("../config/database/middleware/validations");
 class CtshirtController {
     getAllTshirts(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -168,8 +168,8 @@ class CtshirtController {
                 tshirt = tshirtModel.createModel();
                 filter = req.params.id;
                 update = req.body;
-                if (!(0, clothes_validations_1.allPropertiesAreValid)(update))
-                    throw new Error('Properties are not valid: ' + (0, clothes_validations_1.propertiesInvalids)(update));
+                if (!(0, validations_1.allPropertiesAreValid)(clothes_schema_1.clothesSchema, update))
+                    throw new Error('Properties are not valid: ' + (0, validations_1.propertiesInvalids)(clothes_schema_1.clothesSchema, update));
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {
                     //when the connection is established find all tshirts in database

@@ -9,15 +9,95 @@ import { createToken, verifyToken} from '../config/database/middleware/token';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { getHTMLformattedForEmail, getRandomCode } from "../config/database/middleware/emailservice.middelwares";
 import cors from 'cors';
-import { CTshirtModel } from "../config/database/models/tshirt.model";
+import { propertiesInvalids,allPropertiesAreValid } from "../config/database/middleware/validations";
+import { isValidToUpdate } from "../config/database/middleware/users.validations";
+
 
 
 export class UserController{
 
-    async getAllUsers(req: express.Request, res: express.Response){};
+    async getAllUsers(req: express.Request, res: express.Response){
+
+        let model = new CUserModel('user', userSchema);
+        let document = model.createModel();
+
+            try{
+                
+                //connect to database
+
+                databaseConnection()
+                .then(connection => {
+                    //when the connection is established find all tshirts in database
+                        document.find().exec()
+                        .then(data => {
+                            res.status(200).json({result: "ok", response: data});
+                            return;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            res.status(401).json({result: "ok", error: error});
+                            return;
+                        });
+                })
+                .catch(error => { 
+                res.status(401).json({ result:"error", error: error})
+                return; 
+                })
+            
+            } catch (err) {
+                res.status(401).json({ result:"error", error: err })
+                return;
+            }
+
+    };
 
     async getUserByUsername(req: express.Request, res: express.Response){
 
+        let model = new CUserModel('user', userSchema)
+        let document = model.createModel();
+        let filter: RegExp;
+        const username = req.query.username;
+
+
+        if(username === undefined || username.length === 0) {
+            res.status(401).json({ result:"error", error:"Don't exist filter"});
+            return; 
+        };
+
+        if(typeof username === 'string'){ filter = new RegExp(username, 'gi');}
+
+        try{     
+                //connect to database
+
+                databaseConnection()
+                .then(connection => {
+                    //when the connection is established find  tshirts match with filter in  database
+                        document.find({username: filter}).exec()
+                        .then(data => {
+                            if(data.length === 0){
+                                res.status(200).json({result: "ok", response: data, comment: `There are no results that match the search: ${username}`});
+                                return;
+                            }
+                            res.status(200).json({result: "ok", response: data});
+                            return;
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            res.status(401).json({result: "error", error: error.message});
+                            return;
+                        });
+                
+                
+                })
+                .catch(error => { 
+                res.status(401).json({ result:"error", error: error.message})
+                return; 
+                })
+            
+        } catch (error) {
+            res.status(401).json({ result:"error", error: error });
+            return;
+        }
         
     };
 
@@ -110,7 +190,47 @@ export class UserController{
             return;
         }
     }
-        async modifyUser(req: express.Request, res: express.Response){
+    async modifyUser(req: express.Request, res: express.Response){
+        try{
+            let user: mongoose.Model<CUserModel>;
+            let filter: string;
+            let update: object;
+            const userModel = new CUserModel('user', userSchema);
+            
+            user = userModel.createModel();
+            filter = req.params.id;
+            update = req.body;
+
+            if(!isValidToUpdate(Object.keys(update))) throw new Error('There are properties that cannot be updated');
+
+            if(!allPropertiesAreValid(userSchema,update)) throw new Error('Properties are not valid: ' + propertiesInvalids(userSchema,update));
+            
+            databaseConnection()
+            .then(connection => {
+                //when the connection is established find all tshirts in database
+                    user.findOneAndUpdate({_id: new mongoose.Types.ObjectId(filter)}, update, { new: true }).exec()
+                    .then(data => {
+                        res.status(200).json({result: "ok", response: data});
+                        return;
+                    })
+                    .catch(error => {
+                        res.status(401).json({result: "error", error: error.message});
+                        return;
+                    });
+            
+            
+            })
+            .catch(error => { 
+            res.status(401).json({ result:"error", error: error.message});
+            return; 
+            });
+
+
+
+        } catch (error: any){
+            res.status(401).json({result: "error", error: error.message});
+            return;
+        }
 
     };
 

@@ -3,7 +3,7 @@ import mongoose, { isValidObjectId } from "mongoose";
 import { CTshirtSchema, clothesSchema } from '../config/database/schema/clothes.schema';
 import { databaseConnection, disconnectDatabase } from "../config/database/db.config";
 import { CTshirtModel } from "../config/database/models/tshirt.model";
-import { allPropertiesAreValid, propertiesInvalids } from '../config/database/middleware/clothes.validations';
+import { allPropertiesAreValid, propertiesInvalids } from '../config/database/middleware/validations';
 
 export class CtshirtController{
 
@@ -178,7 +178,7 @@ export class CtshirtController{
             filter = req.params.id;
             update = req.body;
 
-            if(!allPropertiesAreValid(update)) throw new Error('Properties are not valid: ' + propertiesInvalids(update));
+            if(!allPropertiesAreValid(clothesSchema,update)) throw new Error('Properties are not valid: ' + propertiesInvalids(clothesSchema,update));
             
             databaseConnection()
             .then(connection => {

@@ -65,3 +65,15 @@ export function validatePassword(password: string): boolean {
         throw err;
     }
 }
+
+export function isValidToUpdate(properties: Array<string>): boolean {
+    console.log(properties);
+    let res: boolean = true;
+    let propDontUpdate: Array<string> = ["email","created_at","verificated"];
+    propDontUpdate.forEach(prop => {
+
+        if(properties.includes(prop)){ res = false} 
+    })
+
+    return res;
+}
