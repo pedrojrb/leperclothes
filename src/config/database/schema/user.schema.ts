@@ -6,7 +6,6 @@ interface IUser {
     username: object,
     email: object,
     password: object,
-    deleted: object,
     created_at: object,
     verificated: object
 }
@@ -15,7 +14,6 @@ export class CUserSchema extends CBaseSchema implements IUser{
     username: object;
     email: object;
     password: object;
-    deleted: object;
     created_at: object;
     verificated: object;
 
@@ -24,7 +22,6 @@ export class CUserSchema extends CBaseSchema implements IUser{
         this.username = user.username;
         this.email = user.email;
         this.password = user.password;
-        this.deleted = user.deleted;
         this.created_at = user.created_at;
         this.verificated = user.verificated;
         this.createSchema(this);
@@ -66,10 +63,6 @@ let user = new CUserSchema({
         type: "String",
         required: true,
         validate: validatePassword
-    },
-    deleted: {
-        type: "Boolean",
-        default: false
     },
     created_at: {
         type: "Date",

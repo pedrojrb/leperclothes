@@ -211,6 +211,43 @@ class UserController {
     ;
     deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            let user;
+            let filter;
+            const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+            user = userModel.createModel();
+            filter = req.params.id;
+            console.log(filter);
+            try {
+                (0, db_config_1.databaseConnection)()
+                    .then(connection => {
+                    //when the connection is established search the user by id
+                    user.deleteOne({ _id: new mongoose_1.default.Types.ObjectId(filter) }, { new: true }).exec()
+                        .then(data => {
+                        if (data.deletedCount === 1) {
+                            res.status(200).json({ result: "ok", response: data });
+                            return;
+                        }
+                        else {
+                            res.status(200).json({ result: "ok", response: `User has already been removed`, data: data });
+                            return;
+                        }
+                    })
+                        .catch(error => {
+                        res.status(401).json({ result: "error", error: error.message });
+                        return;
+                    });
+                })
+                    .catch(error => {
+                    res.status(401).json({ result: "error", error: error.message });
+                    return;
+                });
+            }
+            catch (error) {
+                if (Object.getOwnPropertyNames(error).includes("message")) {
+                    res.status(401).json({ result: "error", error: error.message });
+                    return;
+                }
+            }
         });
     }
     ;

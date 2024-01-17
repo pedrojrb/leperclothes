@@ -16,10 +16,10 @@ class UserRouter extends router_1.CRouter {
     routes() {
         this.router.get('/user', (req, res) => this.controller.getAllUsers(req, res));
         this.router.get('/user/search/:username?', (req, res) => this.controller.getUserByUsername(req, res));
+        this.router.delete('/user/search/:id', (req, res) => this.controller.deleteUser(req, res));
         this.router.get('/user/verify/:token', (req, res) => this.controller.verifyUser(req, res));
         this.router.post('/user/create', (req, res) => this.controller.createUser(req, res));
         this.router.post('/user/modify/:id', (req, res) => this.controller.modifyUser(req, res));
-        this.router.post('/user/:id', (req, res) => this.controller.deleteUser(req, res));
         this.router.post('/user/verify/:token', (req, res) => this.controller.verifyUser(req, res));
     }
 }

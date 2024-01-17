@@ -235,7 +235,47 @@ export class UserController{
     };
 
     async deleteUser(req: express.Request,res: express.Response){
+        let user: mongoose.Model<CUserModel>;
+        let filter: string;
+        const userModel = new CUserModel('user', userSchema);
 
+        user = userModel.createModel();
+        filter = req.params.id;
+        console.log(filter);
+
+        try{
+             
+            databaseConnection()
+            .then(connection => {
+                //when the connection is established search the user by id
+                    user.deleteOne({_id: new mongoose.Types.ObjectId(filter)}, { new: true }).exec()
+                    .then(data => {
+                        if(data.deletedCount === 1){
+
+                            res.status(200).json({result: "ok", response: data});
+                            return;
+                        } else {
+                            res.status(200).json({result: "ok", response: `User has already been removed`, data: data});
+                            return;
+                        }
+                    })
+                    .catch(error => {
+                        res.status(401).json({result: "error", error: error.message});
+                        return;
+                    });
+            
+            
+            })
+            .catch(error => { 
+            res.status(401).json({ result:"error", error: error.message});
+            return; 
+            });
+        } catch (error: any){ 
+            if(Object.getOwnPropertyNames(error).includes("message")){
+                res.status(401).json({result: "error", error: error.message});
+                return;
+            }      
+        }
     };
 
     async verifyUser(req: express.Request, res: express.Response){

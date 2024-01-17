@@ -13,7 +13,6 @@ class CUserSchema extends schema_1.CBaseSchema {
         this.username = user.username;
         this.email = user.email;
         this.password = user.password;
-        this.deleted = user.deleted;
         this.created_at = user.created_at;
         this.verificated = user.verificated;
         this.createSchema(this);
@@ -49,10 +48,6 @@ let user = new CUserSchema({
         type: "String",
         required: true,
         validate: users_validations_1.validatePassword
-    },
-    deleted: {
-        type: "Boolean",
-        default: false
     },
     created_at: {
         type: "Date",

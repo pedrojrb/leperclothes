@@ -17,10 +17,10 @@ export class UserRouter extends CRouter<UserController>{
     routes(): void {
         this.router.get('/user', (req: express.Request,res: express.Response) => this.controller.getAllUsers(req,res))
         this.router.get('/user/search/:username?', (req: express.Request,res: express.Response) => this.controller.getUserByUsername(req,res))
+        this.router.delete('/user/search/:id', (req: express.Request,res: express.Response) => this.controller.deleteUser(req,res))
         this.router.get('/user/verify/:token', (req: express.Request, res: express.Response) => this.controller.verifyUser(req,res))
         this.router.post('/user/create', (req: express.Request,res: express.Response) => this.controller.createUser(req,res))
         this.router.post('/user/modify/:id', (req: express.Request,res: express.Response) => this.controller.modifyUser(req,res))
-        this.router.post('/user/:id', (req: express.Request,res: express.Response) => this.controller.deleteUser(req,res))
         this.router.post('/user/verify/:token', (req: express.Request, res: express.Response) => this.controller.verifyUser(req,res))
     }
 }
