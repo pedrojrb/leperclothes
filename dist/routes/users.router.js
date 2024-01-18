@@ -14,6 +14,8 @@ class UserRouter extends router_1.CRouter {
      * This method executes all of routing methods.
      */
     routes() {
+        this.router.post('/user/login', (req, res) => this.controller.loginUser(req, res));
+        this.router.get('/user/login', (req, res) => this.controller.loginUser(req, res));
         this.router.get('/user', (req, res) => this.controller.getAllUsers(req, res));
         this.router.get('/user/search/:username?', (req, res) => this.controller.getUserByUsername(req, res));
         this.router.delete('/user/search/:id', (req, res) => this.controller.deleteUser(req, res));

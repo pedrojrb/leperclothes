@@ -15,6 +15,8 @@ export class UserRouter extends CRouter<UserController>{
      */
 
     routes(): void {
+        this.router.post('/user/login', (req: express.Request,res: express.Response) => this.controller.loginUser(req,res))
+        this.router.get('/user/login', (req: express.Request,res: express.Response) => this.controller.loginUser(req,res))
         this.router.get('/user', (req: express.Request,res: express.Response) => this.controller.getAllUsers(req,res))
         this.router.get('/user/search/:username?', (req: express.Request,res: express.Response) => this.controller.getUserByUsername(req,res))
         this.router.delete('/user/search/:id', (req: express.Request,res: express.Response) => this.controller.deleteUser(req,res))

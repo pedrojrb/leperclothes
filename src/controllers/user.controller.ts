@@ -16,6 +16,86 @@ import { isValidToUpdate } from "../config/database/middleware/users.validations
 
 export class UserController{
 
+    async loginUser(req: express.Request, res: express.Response){
+        
+        
+        if(req.method === 'GET'){
+            try{
+                res.status(200).json({result:"ok", data:"Login page successfully"})
+            } catch ( error: any){
+                if(error.code ===400){
+                    
+                    res.status(400).json({result:"error",data:"Login page failed"});
+                }
+                
+                if( error.code ===404){
+                    res.status(404).json({result:"error",data:"Page not found"});
+                }
+            }
+        }
+        
+        
+        if( req.method === "POST"){
+            let cryptr = new Cryptr('Password')
+            let model = new CUserModel('user', userSchema);
+            let document = model.createModel();
+            let filter = req.body;
+            let passDecrypted: string
+            try{
+
+                //handle errors meesage if username or password is not includes in request body.
+                console.log(filter.username.length);
+                if(!filter.username || filter.username.length === 0) throw new Error(`Username is required`);
+
+                if(!filter.password || filter.password.length === 0) throw new Error(`Password is required`);
+        
+                databaseConnection()
+                .then(connection => {
+                    //when the connection is established find  user match with filter in  database
+                        document.findOne({username: filter.username}).exec()
+                        .then((data: any) => {
+
+                            //Ask if exists user matches
+                            if(!data){
+                                throw new Error(`Username and password is required`);;
+                            }
+
+                            //verify if data is a object type.
+
+                            if(typeof data === 'object'){
+                                //Data received from database decrypt password for comparate with password in body request.
+                                passDecrypted = cryptr.decrypt(data.password);
+
+                                if (filter.password === passDecrypted){
+                                    res.status(200).json({result: "ok", response: data});
+                                    return;
+                                }
+
+                                throw new Error('Invalid username or password');
+                            
+
+                            }
+
+                            throw new Error('Error in request: ' + data);
+                        })
+                        .catch(error => {
+                            res.status(401).json({result: "error", error: error.message});
+                            return;
+                        })
+                })
+                .catch(error => { 
+                    res.status(401).json({ result:"error", error: error})
+                    return; 
+                });
+            } catch(error){
+                res.status(401).json({ result:"error", error: error.message})
+                return;
+            }
+
+        }
+            
+    }
+
     async getAllUsers(req: express.Request, res: express.Response){
 
         let model = new CUserModel('user', userSchema);
