@@ -17,6 +17,7 @@ export class CtshirtRouter extends CRouter<CtshirtController>{
      * This method executes all of routing methods.
      */
     routes(): void {
+        this.router.get('', (req: express.Request,res: express.Response) => this.controller.getAllTshirts(req,res));
         this.router.get('/tshirts', (req: express.Request,res: express.Response) => this.controller.getAllTshirts(req,res));
         this.router.get('/tshirts/search/:name?', (req: express.Request,res: express.Response) => this.controller.getTshirtByName(req,res));
         this.router.get('/tshirts/search/:id', (req: express.Request,res: express.Response) => this.controller.getTshirtById(req,res));

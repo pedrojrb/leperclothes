@@ -25,14 +25,54 @@ Practica de diferentes conceptos de OOP y manejo de errores en Typescript.
 - dotenv v16.3.1
 - cors v2.8.5
 - mongoose v7.5.3
+- resend v2.0.0
 - typescript v5.2.2
-- class Validator v0.14.0
 - JsonWebToken v9.0.2
 
 ---
 ## Dependencias de desarrollo utilizadas:
-- @types/cors v2.8.14
+- @types/cors v28.14
 - @types/express v4.17.18
-- @types/morgan v.1.9.6
-- concurrently v.8.2.1
-- nodemon v.3.0.1
+- @types/morgan v1.9.6
+- concurrently v8.2.1
+- nodemon v3.0.1
+- cryptr v6.3.0
+
+
+## Como instalarla
+<b>Requisitos:</b>
+Tener instalado NodeJS version 18.18.0 o posterior.
+
+Clonar este proyecto.
+En la carpeta donde fue clonado el proyecto ejecutar el siguiente comando: <b>npm run start:dev</b>
+
+# EndPoints
+
+    URL: https://localhost:8001/api
+
+### User Endpoints
+
+
+| Método | EndPoint | Descripción |
+|-----------|-----------|-----------|
+| <p style="color:green">GET</p>   | /user/login    | Iniciar sesión   |
+| <p style="color:green">GET</p>    | /user    | Obtener todos los usuarios    |
+| <p style="color:green">GET</p>    | /user/search/username=?    | Buscar por nombre de usuario    |
+| <p style="color:green">GET</p>   | /user/verify/token    | Verificacion de usuario    |
+| <p style="color:yellow">POST</p>    | /user/login    | Enviar datos para inicio de sesión    |
+| <p style="color:yellow">POST</p>    | user/create    | Crear usuario    |
+| <p style="color:yellow">POST</p>   | /user/modify/id    | Modificar usuario    |
+| <p style="color:yellow">POST</p>   | /user/verify/token | Enviar código para verificar usuario   |
+| <p style="color:red">DELETE</p>  | /user/search/id   | Eliminar usuario |
+
+
+### T-shirts EndPoints
+
+| Método | EndPoint | Descripción |
+|-----------|-----------|-----------|
+| <p style="color:green">GET</p>   | /tshirts    | Obtener todas las remeras   |
+| <p style="color:green">GET</p>    | /tshirts/search/name?    | Buscar remeras por nombre    |
+| <p style="color:green">GET</p>    | /tshirts/search/id    | Filtrar remera por id    |
+| <p style="color:yellow">POST</p>   | /tshirts/modify/id    | Modificar remera    |
+| <p style="color:yellow">POST</p>    | /tshirts/create    | Crear remera    |
+| <p style="color:red">DELETE</p>  | /tshirts/search/id  | Eliminar remera |
