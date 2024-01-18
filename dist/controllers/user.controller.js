@@ -40,6 +40,7 @@ class UserController {
                 }
             }
             if (req.method === "POST") {
+                let token;
                 let cryptr = new cryptr_1.default('Password');
                 let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
                 let document = model.createModel();
@@ -67,7 +68,13 @@ class UserController {
                                 //Data received from database decrypt password for comparate with password in body request.
                                 passDecrypted = cryptr.decrypt(data.password);
                                 if (filter.password === passDecrypted) {
-                                    res.status(200).json({ result: "ok", response: data });
+                                    //create token with username,email and verified data of user.
+                                    token = (0, token_1.createToken)({
+                                        "username": data.username,
+                                        "email": data.email,
+                                        "verified": data.verified
+                                    }, "1h");
+                                    res.status(200).json({ result: "ok", response: data, access_token: token });
                                     return;
                                 }
                                 throw new Error('Invalid username or password');
@@ -95,7 +102,12 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
             let document = model.createModel();
+            let token;
             try {
+                if (req.headers.authorization) {
+                    token = req.headers.authorization.split(' ')[1];
+                    (0, token_1.verifyToken)(token);
+                }
                 //connect to database
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {
@@ -116,8 +128,8 @@ class UserController {
                     return;
                 });
             }
-            catch (err) {
-                res.status(401).json({ result: "error", error: err });
+            catch (error) {
+                res.status(401).json({ result: "error", error: error.message });
                 return;
             }
         });
@@ -128,16 +140,21 @@ class UserController {
             let model = new users_model_1.CUserModel('user', user_schema_1.userSchema);
             let document = model.createModel();
             let filter;
+            let token;
             const username = req.query.username;
-            if (username === undefined || username.length === 0) {
-                res.status(401).json({ result: "error", error: "Don't exist filter" });
-                return;
-            }
-            ;
-            if (typeof username === 'string') {
-                filter = new RegExp(username, 'gi');
-            }
             try {
+                if (req.headers.authorization) {
+                    token = req.headers.authorization.split(' ')[1];
+                    (0, token_1.verifyToken)(token);
+                }
+                if (username === undefined || username.length === 0) {
+                    res.status(401).json({ result: "error", error: "Don't exist filter" });
+                    return;
+                }
+                ;
+                if (typeof username === 'string') {
+                    filter = new RegExp(username, 'gi');
+                }
                 //connect to database
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {
@@ -163,7 +180,7 @@ class UserController {
                 });
             }
             catch (error) {
-                res.status(401).json({ result: "error", error: error });
+                res.status(401).json({ result: "error", error: error.message });
                 return;
             }
         });
@@ -226,13 +243,13 @@ class UserController {
                         }
                     }
                 })
-                    .catch(err => {
-                    res.status(500).json({ result: "error", error: err });
+                    .catch((error) => {
+                    res.status(500).json({ result: "error", error: error.message });
                     return;
                 });
             }
-            catch (err) {
-                res.status(500).json({ result: "error", error: err });
+            catch (error) {
+                res.status(500).json({ result: "error", error: error.message });
                 return;
             }
         });
@@ -243,7 +260,13 @@ class UserController {
                 let user;
                 let filter;
                 let update;
+                let token;
                 const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+                //verify if token is valid or is not expired
+                if (req.headers.authorization) {
+                    token = req.headers.authorization.split(' ')[1];
+                    (0, token_1.verifyToken)(token);
+                }
                 user = userModel.createModel();
                 filter = req.params.id;
                 update = req.body;
@@ -281,9 +304,14 @@ class UserController {
             let user;
             let filter;
             const userModel = new users_model_1.CUserModel('user', user_schema_1.userSchema);
+            let token;
+            //verify if token is valid or is not expired
+            if (req.headers.authorization) {
+                token = req.headers.authorization.split(' ')[1];
+                (0, token_1.verifyToken)(token);
+            }
             user = userModel.createModel();
             filter = req.params.id;
-            console.log(filter);
             try {
                 (0, db_config_1.databaseConnection)()
                     .then(connection => {

@@ -4,6 +4,7 @@ import { CTshirtSchema, clothesSchema } from '../config/database/schema/clothes.
 import { databaseConnection, disconnectDatabase } from "../config/database/db.config";
 import { CTshirtModel } from "../config/database/models/tshirt.model";
 import { allPropertiesAreValid, propertiesInvalids } from '../config/database/middleware/validations';
+import { verifyToken } from "../config/database/middleware/token";
 
 export class CtshirtController{
 
@@ -123,7 +124,15 @@ export class CtshirtController{
         try{
             let tshirt;
             let document: mongoose.Document<CTshirtModel | CTshirtSchema | object>;
-            
+            let token: string;
+
+            //verify if token is valid or is not expired
+            if(req.headers.authorization){
+                token = req.headers.authorization.split(' ')[1];
+
+                verifyToken(token);
+            }
+        
             const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
 
             tshirt = tshirtModel.createModel();
@@ -172,8 +181,17 @@ export class CtshirtController{
             let tshirt: mongoose.Model<CTshirtModel | undefined>;
             let filter: string;
             let update: object;
+            let token: string;
             const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
             
+            //verify if token is valid or is not expired
+            if(req.headers.authorization){
+                token = req.headers.authorization.split(' ')[1];
+
+                verifyToken(token);
+            }
+
+
             tshirt = tshirtModel.createModel();
             filter = req.params.id;
             update = req.body;
@@ -212,7 +230,16 @@ export class CtshirtController{
     async deleteTshirt(req: express.Request,res: express.Response){
         let tshirt: mongoose.Model<CTshirtModel | undefined>;
         let filter: string;
+        let token: string;
         const tshirtModel = new CTshirtModel('tshirt', clothesSchema);
+
+
+        //verify if token is valid or is not expired
+        if(req.headers.authorization){
+            token = req.headers.authorization.split(' ')[1];
+
+            verifyToken(token);
+        }
 
         tshirt = tshirtModel.createModel();
         filter = req.params.id;

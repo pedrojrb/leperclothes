@@ -36,6 +36,7 @@ export class UserController{
         
         
         if( req.method === "POST"){
+            let token: string;
             let cryptr = new Cryptr('Password')
             let model = new CUserModel('user', userSchema);
             let document = model.createModel();
@@ -67,7 +68,16 @@ export class UserController{
                                 passDecrypted = cryptr.decrypt(data.password);
 
                                 if (filter.password === passDecrypted){
-                                    res.status(200).json({result: "ok", response: data});
+
+                                    //create token with username,email and verified data of user.
+
+                                    token = createToken({
+                                        "username": data.username,
+                                        "email": data.email,
+                                        "verified": data.verified
+                                    }, "1h");
+
+                                    res.status(200).json({result: "ok", response: data, access_token: token});
                                     return;
                                 }
 
@@ -87,7 +97,7 @@ export class UserController{
                     res.status(401).json({ result:"error", error: error})
                     return; 
                 });
-            } catch(error){
+            } catch(error: any){
                 res.status(401).json({ result:"error", error: error.message})
                 return;
             }
@@ -100,34 +110,40 @@ export class UserController{
 
         let model = new CUserModel('user', userSchema);
         let document = model.createModel();
+        let token: string;
+        try{
 
-            try{
-                
-                //connect to database
+            if(req.headers.authorization){
+                token = req.headers.authorization.split(' ')[1];
 
-                databaseConnection()
-                .then(connection => {
-                    //when the connection is established find all tshirts in database
-                        document.find().exec()
-                        .then(data => {
-                            res.status(200).json({result: "ok", response: data});
-                            return;
-                        })
-                        .catch(error => {
-                            console.log(error);
-                            res.status(401).json({result: "ok", error: error});
-                            return;
-                        });
-                })
-                .catch(error => { 
-                res.status(401).json({ result:"error", error: error})
-                return; 
-                })
-            
-            } catch (err) {
-                res.status(401).json({ result:"error", error: err })
-                return;
+                verifyToken(token);
             }
+                
+            //connect to database
+
+            databaseConnection()
+            .then(connection => {
+                //when the connection is established find all tshirts in database
+                    document.find().exec()
+                    .then(data => {
+                        res.status(200).json({result: "ok", response: data});
+                        return;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        res.status(401).json({result: "ok", error: error});
+                        return;
+                    });
+            })
+            .catch(error => { 
+            res.status(401).json({ result:"error", error: error})
+            return; 
+            })
+        
+        } catch (error: any) {
+            res.status(401).json({ result:"error", error: error.message })
+            return;
+        }
 
     };
 
@@ -136,17 +152,24 @@ export class UserController{
         let model = new CUserModel('user', userSchema)
         let document = model.createModel();
         let filter: RegExp;
+        let token: string;
         const username = req.query.username;
 
+        try{
 
-        if(username === undefined || username.length === 0) {
-            res.status(401).json({ result:"error", error:"Don't exist filter"});
-            return; 
-        };
+            if(req.headers.authorization){
+                token = req.headers.authorization.split(' ')[1];
 
-        if(typeof username === 'string'){ filter = new RegExp(username, 'gi');}
+                verifyToken(token);
+            }
 
-        try{     
+            if(username === undefined || username.length === 0) {
+                res.status(401).json({ result:"error", error:"Don't exist filter"});
+                return; 
+            };
+    
+            if(typeof username === 'string'){ filter = new RegExp(username, 'gi');}
+            
                 //connect to database
 
                 databaseConnection()
@@ -174,8 +197,8 @@ export class UserController{
                 return; 
                 })
             
-        } catch (error) {
-            res.status(401).json({ result:"error", error: error });
+        } catch (error: any) {
+            res.status(401).json({ result:"error", error: error.message });
             return;
         }
         
@@ -260,13 +283,13 @@ export class UserController{
 
         
             })
-            .catch(err => {
-                res.status(500).json({ result: "error", error: err });
+            .catch((error: any) => {
+                res.status(500).json({ result: "error", error: error.message });
                 return;
             });
 
-        } catch(err){
-            res.status(500).json({ result: "error", error: err});
+        } catch(error: any){
+            res.status(500).json({ result: "error", error: error.message});
             return;
         }
     }
@@ -275,11 +298,21 @@ export class UserController{
             let user: mongoose.Model<CUserModel>;
             let filter: string;
             let update: object;
+            let token: string;
             const userModel = new CUserModel('user', userSchema);
-            
+
+            //verify if token is valid or is not expired
+            if(req.headers.authorization){
+                token = req.headers.authorization.split(' ')[1];
+
+                verifyToken(token);
+            }
+
             user = userModel.createModel();
             filter = req.params.id;
             update = req.body;
+
+         
 
             if(!isValidToUpdate(Object.keys(update))) throw new Error('There are properties that cannot be updated');
 
@@ -318,10 +351,18 @@ export class UserController{
         let user: mongoose.Model<CUserModel>;
         let filter: string;
         const userModel = new CUserModel('user', userSchema);
+        let token: string;
+
+        //verify if token is valid or is not expired
+        if(req.headers.authorization){
+            token = req.headers.authorization.split(' ')[1];
+
+            verifyToken(token);
+        }
 
         user = userModel.createModel();
         filter = req.params.id;
-        console.log(filter);
+
 
         try{
              
